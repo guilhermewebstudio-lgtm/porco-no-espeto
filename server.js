@@ -15,7 +15,14 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('trust proxy', 1);
 app.use(express.json({ limit: '50kb' }));
 app.use(express.urlencoded({ extended: false, limit: '50kb' }));
-app.use(express.static(path.join(__dirname, 'public'), { maxAge: '7d' }));
+// Versão dos ficheiros estáticos: muda a cada arranque/deploy, para o browser nunca ficar com CSS/JS antigos
+app.locals.v = Date.now().toString(36);
+app.use(express.static(path.join(__dirname, 'public'), {
+  maxAge: '7d',
+  setHeaders(res, ficheiro) {
+    if (/\.(css|js)$/i.test(ficheiro)) res.setHeader('Cache-Control', 'no-cache');
+  }
+}));
 
 // ---------- Estados dos pedidos ----------
 const ESTADOS = {

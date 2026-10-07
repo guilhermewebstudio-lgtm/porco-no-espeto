@@ -6,8 +6,8 @@
   <meta name="robots" content="noindex, nofollow">
   <title>Área reservada | <%= site.nome %></title>
   <link rel="preload" href="/fonts/saira-condensed-latin-800-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/css/fonts.css">
-  <link rel="stylesheet" href="/css/auth.css">
+  <link rel="stylesheet" href="/css/fonts.css?v=<%= v %>">
+  <link rel="stylesheet" href="/css/auth.css?v=<%= v %>">
 </head>
 <body>
   <main class="box">
@@ -31,6 +31,6 @@
     <a class="voltar" href="/">← Voltar ao site</a>
   </main>
 
-  <script src="/js/auth.js"></script>
+  <script src="/js/auth.js?v=<%= v %>"></script>
 </body>
 </html>
