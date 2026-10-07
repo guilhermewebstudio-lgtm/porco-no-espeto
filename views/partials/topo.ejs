@@ -1,11 +1,27 @@
 <header class="topo">
   <a class="marca" href="/admin">🔥 <span>Porco no Espeto<small>Área reservada</small></span></a>
   <nav class="nav-admin">
-    <a href="/admin" class="<%= ativa === 'pedidos' ? 'on' : '' %>">Pedidos<% if (typeof atencaoTotal !== 'undefined' && atencaoTotal > 0) { %><span class="bola"><%= atencaoTotal %></span><% } %></a>
+    <a href="/admin" class="<%= ativa === 'pedidos' ? 'on' : '' %>">Pedidos<span class="bola" id="nav-bola" <%= (typeof atencaoTotal !== 'undefined' && atencaoTotal > 0) ? '' : 'hidden' %>><%= (typeof atencaoTotal !== 'undefined') ? atencaoTotal : 0 %></span></a>
     <a href="/admin/calendario" class="<%= ativa === 'calendario' ? 'on' : '' %>">Calendário</a>
   </nav>
   <div class="acoes">
+    <div class="sino-wrap">
+      <button type="button" class="sino" id="sino" aria-label="Notificações" aria-expanded="false" aria-controls="sino-painel">
+        <span aria-hidden="true">🔔</span><span class="bola" id="sino-bola" hidden>0</span>
+      </button>
+      <div class="sino-painel" id="sino-painel" hidden>
+        <div class="sino-cab">A precisar de resposta</div>
+        <div class="sino-lista" id="sino-lista"><p class="sino-vazio">Tudo em dia 🎉</p></div>
+        <div class="sino-opcoes">
+          <label class="sino-opt"><input type="checkbox" id="opt-som"> Tocar um som quando chegar algo</label>
+          <button type="button" class="btn-linha" id="opt-browser">Ativar avisos do browser</button>
+          <p class="sino-nota">Os avisos funcionam enquanto este separador estiver aberto, mesmo em segundo plano.</p>
+        </div>
+      </div>
+    </div>
     <a href="/" target="_blank" rel="noopener">Ver site</a>
     <form method="post" action="/admin/logout" style="margin:0"><button type="submit">Sair</button></form>
   </div>
 </header>
+<div class="toasts" id="toasts" aria-live="polite"></div>
+<script src="/js/notificacoes.js" defer></script>

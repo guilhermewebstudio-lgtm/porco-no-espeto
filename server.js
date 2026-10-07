@@ -420,6 +420,52 @@ app.post('/admin/logout', (req, res) => {
   res.redirect('/admin/login');
 });
 
+// ---------- Admin: notificações (consultadas de poucos em poucos segundos pelo painel) ----------
+function resumo(texto, max) {
+  const t = String(texto || '').replace(/\s+/g, ' ').trim();
+  return t.length > max ? t.slice(0, max - 1) + '…' : t;
+}
+
+app.get('/admin/api/notificacoes', exigirAdminApi, wrap(async (req, res) => {
+  const vazio = { ok: true, atencao: 0, pendentes: [], novos: [], mensagens: [], maxP: 0, maxM: 0 };
+  if (!pool) return res.json(vazio);
+
+  const maxP = Number((await pool.query('SELECT MAX(id) AS m FROM orcamentos')).rows[0].m) || 0;
+  const maxM = Number((await pool.query("SELECT MAX(id) AS m FROM mensagens WHERE autor = 'cliente'")).rows[0].m) || 0;
+
+  // Só devolve eventos se o painel já souber de onde parte (1.ª vez: só regista o ponto de partida)
+  const temP = req.query.p !== undefined && /^\d+$/.test(String(req.query.p));
+  const temM = req.query.m !== undefined && /^\d+$/.test(String(req.query.m));
+  let novos = [];
+  let mensagens = [];
+  if (temP) {
+    novos = (await pool.query('SELECT id, nome, tipo FROM orcamentos WHERE id > $1 ORDER BY id LIMIT 10', [Number(req.query.p)])).rows
+      .map((o) => ({ id: o.id, nome: o.nome, tipo: o.tipo || 'Evento' }));
+  }
+  if (temM) {
+    const ids = new Set(novos.map((o) => o.id)); // a 1.ª mensagem de um pedido novo já vai no aviso do pedido
+    mensagens = (await pool.query(
+      "SELECT m.id, m.orcamento_id, m.texto, o.nome FROM mensagens m JOIN orcamentos o ON o.id = m.orcamento_id WHERE m.autor = 'cliente' AND m.id > $1 ORDER BY m.id LIMIT 10",
+      [Number(req.query.m)]
+    )).rows
+      .filter((x) => !ids.has(x.orcamento_id))
+      .map((x) => ({ id: x.id, pedido: x.orcamento_id, nome: x.nome, texto: resumo(x.texto, 120) }));
+  }
+
+  // Lista "a precisar de resposta" para o sino
+  const atencao = await idsComAtencao();
+  const naoLidas = await pool.query("SELECT orcamento_id FROM mensagens WHERE autor = 'cliente' AND lida = FALSE");
+  const mapa = {};
+  naoLidas.rows.forEach((r) => { mapa[r.orcamento_id] = (mapa[r.orcamento_id] || 0) + 1; });
+  const recentes = (await pool.query('SELECT id, nome, tipo, estado FROM orcamentos ORDER BY criado_em DESC LIMIT 200')).rows;
+  const pendentes = recentes
+    .filter((o) => atencao.has(o.id))
+    .slice(0, 8)
+    .map((o) => ({ id: o.id, nome: o.nome, tipo: o.tipo || 'Evento', estado: o.estado, nao_lidas: mapa[o.id] || 0 }));
+
+  res.set('Cache-Control', 'no-store').json({ ok: true, atencao: atencao.size, pendentes, novos, mensagens, maxP, maxM });
+}));
+
 // ---------- Admin: lista de pedidos ----------
 app.get('/admin', exigirAdmin, wrap(async (req, res) => {
   const filtro = Object.prototype.hasOwnProperty.call(ESTADOS, req.query.estado) ? req.query.estado : '';

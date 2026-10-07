@@ -126,3 +126,33 @@ h1 { font-weight: 900; font-size: clamp(1.7rem, 4vw, 2.3rem); }
   .nav-admin { order: 3; width: 100%; }
   .chat-form { flex-direction: column; align-items: stretch; }
 }
+
+/* ---------- Notificações ---------- */
+.bola[hidden], .sino-painel[hidden] { display: none; }
+.sino-wrap { position: relative; }
+.sino { appearance: none; background: transparent; border: 1.5px solid var(--linha); color: var(--cream); cursor: pointer; font-size: 1rem; line-height: 1; width: 40px; height: 36px; border-radius: 999px; display: inline-flex; align-items: center; justify-content: center; gap: 4px; position: relative; padding: 0; }
+.sino:hover { border-color: var(--ember-2); }
+.sino .bola { position: absolute; top: -7px; right: -6px; }
+.sino-painel { position: absolute; right: 0; top: calc(100% + 10px); width: min(340px, 88vw); background: #1c130d; border: 1px solid var(--linha); border-radius: 14px; box-shadow: 0 18px 44px rgba(0,0,0,.55); z-index: 20; overflow: hidden; }
+.sino-cab { padding: 12px 16px; font-weight: 800; font-size: .78rem; letter-spacing: .1em; text-transform: uppercase; color: var(--ember-2); border-bottom: 1px solid rgba(255,255,255,.07); }
+.sino-lista { max-height: 300px; overflow-y: auto; }
+.sino-item { display: grid; gap: 1px; padding: 11px 16px; text-decoration: none; border-bottom: 1px solid rgba(255,255,255,.05); }
+.sino-item:hover { background: var(--ink-3); }
+.sino-item strong { font-size: .92rem; }
+.sino-item span { color: var(--muted); font-size: .8rem; }
+.sino-vazio { margin: 0; padding: 18px 16px; color: var(--muted); font-size: .9rem; text-align: center; }
+.sino-opcoes { padding: 12px 16px 14px; border-top: 1px solid rgba(255,255,255,.07); display: grid; gap: 10px; background: #160e09; }
+.sino-opt { display: flex; align-items: center; gap: 8px; font-size: .85rem; cursor: pointer; }
+.sino-opt input { accent-color: var(--ember); width: 16px; height: 16px; }
+.sino-opcoes .btn-linha { width: 100%; text-align: center; }
+.sino-opcoes .btn-linha[disabled] { opacity: .65; cursor: default; }
+.sino-nota { margin: 0; color: var(--muted); font-size: .74rem; line-height: 1.4; }
+
+.toasts { position: fixed; top: 78px; right: 16px; z-index: 40; display: grid; gap: 10px; width: min(340px, calc(100vw - 32px)); pointer-events: none; }
+.toast { pointer-events: auto; display: grid; gap: 2px; text-decoration: none; background: #26180f; border: 1px solid var(--ember); border-left-width: 5px; border-radius: 12px; padding: 12px 16px; box-shadow: 0 14px 34px rgba(0,0,0,.5); animation: toastEntra .35s ease both; transition: opacity .4s, transform .4s; }
+.toast strong { font-size: .88rem; color: var(--ember-2); }
+.toast span { font-size: .88rem; color: var(--cream); overflow-wrap: anywhere; }
+.toast.sai { opacity: 0; transform: translateX(20px); }
+@keyframes toastEntra { from { opacity: 0; transform: translateX(24px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .toast { animation: none; transition: none; } }
+@media (max-width: 560px) { .toasts { top: 120px; } }

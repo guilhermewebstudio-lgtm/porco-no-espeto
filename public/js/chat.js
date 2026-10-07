@@ -15,6 +15,9 @@
   var ultimo = 0;
   var vazio = null;
   var aBuscar = false;
+  var carregado = false;
+  var naoVistas = 0;
+  var tituloBase = document.title;
 
   function hora(iso) {
     return new Date(iso).toLocaleString('pt-PT', {
@@ -61,6 +64,13 @@
       .then(function (d) {
         if (!d || !d.ok) return;
         d.mensagens.forEach(juntar);
+        // Mensagens da outra parte com o separador em segundo plano: contador no título
+        var deOutro = d.mensagens.filter(function (m) { return m.autor !== eu; }).length;
+        if (carregado && deOutro && document.hidden) {
+          naoVistas += deOutro;
+          document.title = '(' + naoVistas + ') Nova mensagem · ' + tituloBase;
+        }
+        carregado = true;
         if (!lista.children.length) mostrarVazio();
         if (d.mensagens.length && (perto || forcarScroll)) {
           lista.scrollTop = lista.scrollHeight;
@@ -110,5 +120,11 @@
 
   buscar(true);
   setInterval(function () { if (!document.hidden) buscar(false); }, 4000);
-  document.addEventListener('visibilitychange', function () { if (!document.hidden) buscar(false); });
+  document.addEventListener('visibilitychange', function () {
+    if (!document.hidden) {
+      naoVistas = 0;
+      document.title = tituloBase;
+      buscar(false);
+    }
+  });
 })();
