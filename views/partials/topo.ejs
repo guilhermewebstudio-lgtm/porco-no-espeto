@@ -1,5 +1,5 @@
 <header class="topo">
-  <a class="marca" href="/admin">🔥 <span>Porco no Espeto<small>Área reservada</small></span></a>
+  <a class="marca" href="/admin"><img class="marca-logo" src="/img/logo.jpg" alt="" width="38" height="38"> <span>Porco no Espeto<small>Área reservada</small></span></a>
   <nav class="nav-admin">
     <a href="/admin" class="<%= ativa === 'pedidos' ? 'on' : '' %>">Pedidos<span class="bola" id="nav-bola" <%= (typeof atencaoTotal !== 'undefined' && atencaoTotal > 0) ? '' : 'hidden' %>><%= (typeof atencaoTotal !== 'undefined') ? atencaoTotal : 0 %></span></a>
     <a href="/admin/calendario" class="<%= ativa === 'calendario' ? 'on' : '' %>">Calendário</a>

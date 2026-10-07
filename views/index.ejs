@@ -4,8 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title><%= site.nome %> | Catering e Eventos em Odivelas</title>
-  <meta name="description" content="Catering e eventos em Odivelas: porco no espeto à bronze para casamentos, batizados, festas e jantares de grupo. Pede o teu orçamento sem compromisso.">
-  <meta name="theme-color" content="#17110d">
+  <meta name="description" content="Porco no Espeto à Bronze Odivelas: especialistas em porco no espeto, com anos de experiência em casamentos, batizados, festas e jantares de grupo. Pede o teu orçamento sem compromisso.">
+  <meta name="theme-color" content="#000235">
+  <link rel="icon" type="image/png" href="/img/favicon.png">
+  <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+  <meta property="og:image" content="/img/og.jpg">
   <meta property="og:title" content="<%= site.nome %> - Catering e Eventos">
   <meta property="og:description" content="Porco no espeto à bronze para casamentos, batizados, festas e jantares de grupo em Odivelas.">
   <meta property="og:type" content="website">
@@ -18,15 +21,14 @@
 
   <div class="intro" id="intro" aria-hidden="true">
     <div class="intro-inner">
-      <span class="intro-flame">🔥</span>
-      <span class="intro-title">Porco no Espeto</span>
-      <span class="intro-sub">à Bronze · Odivelas</span>
+      <img class="intro-logo" src="/img/logo.jpg" alt="" width="190" height="190">
+      <span class="intro-sub">Desde 2004 · Odivelas</span>
     </div>
   </div>
 
   <header class="nav" id="nav">
     <a href="#topo" class="brand">
-      <span class="brand-mark">🔥</span>
+      <img class="brand-logo" src="/img/logo.jpg" alt="" width="46" height="46">
       <span class="brand-text">Porco no Espeto<small>à Bronze · Odivelas</small></span>
     </a>
     <nav class="links" id="links">
@@ -45,7 +47,7 @@
     <section class="hero">
       <div class="hero-bg"></div>
       <div class="embers" aria-hidden="true"></div>
-      <div class="wrap hero-content">
+      <div class="wrap hero-content"><div class="hero-texto">
         <p class="eyebrow reveal">Catering e eventos em Odivelas</p>
         <h1 class="reveal">O sabor do porco no espeto,<br><em>à bronze,</em> na tua festa.</h1>
         <p class="lead reveal">Casamentos, batizados, aniversários e jantares de grupo. Assado devagar, servido com cuidado, para que tu só tenhas de aproveitar o dia.</p>
@@ -62,6 +64,8 @@
           <li>Resposta em 24h</li>
           <li>Montagem e serviço incluídos</li>
         </ul>
+      </div>
+      <figure class="hero-foto"><img src="/galeria/01-espeto.jpg" alt="Porco no espeto a assar à bronze" width="946" height="1240"></figure>
       </div>
     </section>
 
@@ -136,7 +140,7 @@
           <% } %>
         </div>
         <% if (!galeria.length) { %>
-        <p class="hint">Coloca as fotos reais em <code>public/galeria/</code> e aparecem aqui automaticamente.</p>
+        <p class="hint">Coloca fotos em <code>public/galeria/</code> e aparecem aqui automaticamente.</p>
         <% } %>
       </div>
     </section>
@@ -219,13 +223,15 @@
             <li><span>Email</span><a href="mailto:<%= site.email %>"><%= site.email %></a></li>
             <% if (site.telefone) { %><li><span>Telefone</span><a href="tel:<%= site.telefone.replace(/\s/g,'') %>"><%= site.telefone %></a></li><% } %>
             <% if (site.whatsapp) { %><li><span>WhatsApp</span><a href="https://wa.me/<%= site.whatsapp %>" target="_blank" rel="noopener">Enviar mensagem</a></li><% } %>
-            <li><span>Zona</span><%= site.morada %> e arredores</li>
+            <li><span>Morada</span><%= site.morada %></li>
+            <% if (site.instagram) { %><li><span>Instagram</span><a href="https://instagram.com/<%= site.instagram %>" target="_blank" rel="noopener">@<%= site.instagram %></a></li><% } %>
+            <li><span>Zona</span>Odivelas e arredores</li>
             <li><span>Resposta</span><%= site.horario %></li>
           </ul>
         </div>
         <div class="map reveal">
           <iframe title="Mapa Odivelas" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
-            src="https://www.google.com/maps?q=Odivelas,Portugal&output=embed"></iframe>
+            src="https://www.google.com/maps?q=<%= encodeURIComponent(site.morada + ', Portugal') %>&output=embed"></iframe>
         </div>
       </div>
     </section>
@@ -233,7 +239,7 @@
 
   <footer class="footer">
     <div class="wrap">
-      <p>© <%= new Date().getFullYear() %> <%= site.nome %> · <%= site.local %></p>
+      <p>© <%= new Date().getFullYear() %> <%= site.nome %> · <%= site.local %><% if (site.instagram) { %> · <a href="https://instagram.com/<%= site.instagram %>" target="_blank" rel="noopener">Instagram</a><% } %></p>
     </div>
   </footer>
 

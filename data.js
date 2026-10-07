@@ -5,9 +5,10 @@ module.exports = {
   nome: 'Porco no Espeto à Bronze',
   local: 'Odivelas',
   email: process.env.NOTIFY_EMAIL || 'porcoespetoodivelas@gmail.com',
-  whatsapp: (process.env.WHATSAPP_NUMBER || '').replace(/\D/g, ''), // ex: 351912345678
-  telefone: process.env.PHONE_DISPLAY || '',
-  morada: process.env.ADDRESS || 'Odivelas',
+  whatsapp: (process.env.WHATSAPP_NUMBER || '351910092656').replace(/\D/g, ''), // formato: 351910092656
+  telefone: process.env.PHONE_DISPLAY || '910 092 656',
+  instagram: process.env.INSTAGRAM || 'porco_espeto',
+  morada: process.env.ADDRESS || 'Rua Palmira Bastos, Odivelas',
   horario: 'Orçamentos respondidos em menos de 24h',
   // EXIGIR_CONTA=1 no Render: só quem tiver conta consegue pedir orçamento
   exigirConta: process.env.EXIGIR_CONTA === '1',
