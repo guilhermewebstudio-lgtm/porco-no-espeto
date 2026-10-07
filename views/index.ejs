@@ -12,9 +12,8 @@
   <meta property="og:title" content="<%= site.nome %> - Catering e Eventos">
   <meta property="og:description" content="Porco no espeto à bronze para casamentos, batizados, festas e jantares de grupo em Odivelas.">
   <meta property="og:type" content="website">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700;9..144,900&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="preload" href="/fonts/saira-condensed-latin-800-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/css/fonts.css">
   <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
@@ -48,8 +47,8 @@
       <div class="hero-bg"></div>
       <div class="embers" aria-hidden="true"></div>
       <div class="wrap hero-content"><div class="hero-texto">
-        <p class="eyebrow reveal">Catering e eventos em Odivelas</p>
-        <h1 class="reveal">O sabor do porco no espeto,<br><em>à bronze,</em> na tua festa.</h1>
+        <p class="kicker">Catering e eventos em Odivelas</p>
+        <h1>O sabor do porco no espeto à bronze na tua festa</h1>
         <p class="lead reveal">Casamentos, batizados, aniversários e jantares de grupo. Assado devagar, servido com cuidado, para que tu só tenhas de aproveitar o dia.</p>
         <div class="hero-cta reveal">
           <a href="#orcamento" class="btn">Pedir orçamento grátis</a>
@@ -71,7 +70,6 @@
 
     <section class="section" id="eventos">
       <div class="wrap">
-        <p class="eyebrow reveal">Para quem fazemos</p>
         <h2 class="reveal">Eventos que ficam na memória</h2>
         <div class="grid grid-4">
           <% site.eventos.forEach(function(e){ %>
@@ -87,7 +85,6 @@
 
     <section class="section section-dark" id="formatos">
       <div class="wrap">
-        <p class="eyebrow reveal">Preços base</p>
         <h2 class="reveal">Escolhe o formato ideal</h2>
         <p class="sub reveal">Valores de referência por pessoa. O preço final depende da data, local e número de convidados.</p>
         <div class="grid grid-3">
@@ -108,7 +105,6 @@
 
     <section class="section">
       <div class="wrap">
-        <p class="eyebrow reveal">Como funciona</p>
         <h2 class="reveal">Simples, do pedido ao último prato</h2>
         <div class="grid grid-3">
           <% site.passos.forEach(function(p){ %>
@@ -122,9 +118,8 @@
       </div>
     </section>
 
-    <section class="section section-cream" id="galeria">
+    <section class="section section-dark" id="galeria">
       <div class="wrap">
-        <p class="eyebrow reveal">Galeria</p>
         <h2 class="reveal">Alguns dos nossos eventos</h2>
         <div class="gallery">
           <% if (galeria.length) { %>
@@ -148,7 +143,6 @@
     <section class="section" id="orcamento">
       <div class="wrap form-wrap">
         <div class="form-intro">
-          <p class="eyebrow reveal">Orçamento</p>
           <h2 class="reveal">Conta-nos sobre o teu evento</h2>
           <p class="reveal">Preenche em menos de um minuto. Respondemos com uma proposta à tua medida, sem compromisso.</p>
           <ul class="form-points reveal">
@@ -217,7 +211,6 @@
     <section class="section section-dark" id="contacto">
       <div class="wrap contact">
         <div>
-          <p class="eyebrow reveal">Contactos</p>
           <h2 class="reveal">Fala connosco</h2>
           <ul class="contact-list reveal">
             <li><span>Email</span><a href="mailto:<%= site.email %>"><%= site.email %></a></li>

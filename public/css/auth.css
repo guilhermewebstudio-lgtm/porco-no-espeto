@@ -2,7 +2,7 @@
 *, *::before, *::after { box-sizing: border-box; }
 body {
   margin: 0; min-height: 100vh; display: grid; place-items: center; padding: 24px;
-  font-family: 'Manrope', system-ui, sans-serif; color: #eef1f9;
+  font-family: 'Barlow', system-ui, sans-serif; color: #eef1f9;
   background:
     radial-gradient(800px 480px at 85% 10%, rgba(242, 107, 29, .32), transparent 60%),
     radial-gradient(700px 480px at 5% 95%, rgba(42, 167, 230, .28), transparent 60%),
@@ -16,7 +16,7 @@ body {
 }
 @keyframes subir { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
 .chama { width: 96px; height: 96px; border-radius: 18px; margin: 0 auto; display: block; }
-h1 { font-family: 'Fraunces', Georgia, serif; font-weight: 900; font-size: 1.8rem; margin: 12px 0 2px; }
+h1 { font-family: 'Saira Condensed', 'Arial Narrow', sans-serif; font-weight: 900; font-size: 1.8rem; margin: 12px 0 2px; }
 .sub { color: #f9a11b; text-transform: uppercase; letter-spacing: .18em; font-size: .7rem; font-weight: 700; margin: 0 0 6px; }
 .desc { color: #a9b0dc; font-size: .92rem; margin: 14px 0 24px; }
 form { display: grid; gap: 14px; text-align: left; }
@@ -31,7 +31,7 @@ input:focus { outline: none; border-color: #f26b1d; box-shadow: 0 0 0 3px rgba(2
 .ver {
   position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
   appearance: none; background: transparent; border: 0; cursor: pointer;
-  color: #a9b0dc; font: 600 .8rem 'Manrope', sans-serif; padding: 8px 10px; border-radius: 8px;
+  color: #a9b0dc; font: 600 .8rem 'Barlow', sans-serif; padding: 8px 10px; border-radius: 8px;
 }
 .ver:hover { color: #f9a11b; }
 .dica { margin: 6px 0 0; color: #9aa0cf; font-size: .78rem; }
@@ -44,7 +44,7 @@ input:focus { outline: none; border-color: #f26b1d; box-shadow: 0 0 0 3px rgba(2
   color: #ffc9ad; border-radius: 10px; padding: 10px 14px; font-size: .88rem; font-weight: 600; margin: 0 0 16px; text-align: left;
 }
 .btn {
-  appearance: none; border: 0; cursor: pointer; font: 700 1rem 'Manrope', sans-serif; color: #fff;
+  appearance: none; border: 0; cursor: pointer; font: 700 1rem 'Barlow', sans-serif; color: #fff;
   background: linear-gradient(135deg, #f26b1d, #f9a11b); border-radius: 999px; padding: 14px;
   box-shadow: 0 8px 22px rgba(242, 107, 29, .35); transition: transform .2s, box-shadow .2s;
 }

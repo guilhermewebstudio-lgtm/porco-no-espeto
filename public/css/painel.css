@@ -1,15 +1,15 @@
 /* Estilos do painel (equipa) e da página de conversa (cliente) */
 *, *::before, *::after { box-sizing: border-box; }
 :root { --ink: #000235; --ink-2: #080c47; --ink-3: #10165a; --linha: #2a3180; --ember: #f26b1d; --ember-2: #f9a11b; --cream: #eef1f9; --muted: #9aa0cf; }
-body { margin: 0; font-family: 'Manrope', system-ui, sans-serif; background: var(--ink); color: var(--cream); line-height: 1.55; }
+body { margin: 0; font-family: 'Barlow', system-ui, sans-serif; background: var(--ink); color: var(--cream); line-height: 1.55; }
 a { color: inherit; }
-h1, h2, h3 { font-family: 'Fraunces', Georgia, serif; margin: 0; }
+h1, h2, h3 { font-family: 'Saira Condensed', 'Arial Narrow', sans-serif; margin: 0; }
 code { background: rgba(255,255,255,.08); padding: 1px 6px; border-radius: 6px; }
 
 /* Topo */
 .topo { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 14px 4%; background: #00012a; border-bottom: 1px solid rgba(255,255,255,.07); position: sticky; top: 0; z-index: 5; flex-wrap: wrap; }
-.marca { display: flex; align-items: center; gap: 10px; font-family: 'Fraunces', Georgia, serif; font-weight: 700; font-size: 1.05rem; text-decoration: none; }
-.marca small { display: block; font-family: 'Manrope', sans-serif; font-weight: 600; font-size: .66rem; letter-spacing: .16em; text-transform: uppercase; color: var(--ember-2); }
+.marca { display: flex; align-items: center; gap: 10px; font-family: 'Saira Condensed', 'Arial Narrow', sans-serif; font-weight: 700; font-size: 1.05rem; text-decoration: none; }
+.marca small { display: block; font-family: 'Barlow', sans-serif; font-weight: 600; font-size: .66rem; letter-spacing: .16em; text-transform: uppercase; color: var(--ember-2); }
 .nav-admin { display: flex; gap: 6px; }
 .nav-admin a { text-decoration: none; font-weight: 600; font-size: .92rem; padding: 8px 14px; border-radius: 999px; color: #d3d8f0; display: inline-flex; align-items: center; gap: 8px; }
 .nav-admin a:hover { color: var(--ember-2); }
@@ -18,7 +18,7 @@ code { background: rgba(255,255,255,.08); padding: 1px 6px; border-radius: 6px; 
 .acoes { display: flex; align-items: center; gap: 10px; }
 .acoes a, .acoes button, .btn-linha {
   appearance: none; background: transparent; border: 1.5px solid var(--linha); color: var(--cream); cursor: pointer;
-  font: 600 .85rem 'Manrope', sans-serif; padding: 8px 16px; border-radius: 999px; text-decoration: none; display: inline-block;
+  font: 600 .85rem 'Barlow', sans-serif; padding: 8px 16px; border-radius: 999px; text-decoration: none; display: inline-block;
 }
 .acoes a:hover, .acoes button:hover, .btn-linha:hover { border-color: var(--ember-2); color: var(--ember-2); }
 
@@ -65,7 +65,7 @@ h1 { font-weight: 900; font-size: clamp(1.7rem, 4vw, 2.3rem); }
 .grade { display: grid; grid-template-columns: 1.2fr 1fr; gap: 18px; align-items: start; }
 .estados { display: flex; gap: 8px; flex-wrap: wrap; }
 .estados form { margin: 0; }
-.estados button { appearance: none; cursor: pointer; font: 700 .82rem 'Manrope', sans-serif; padding: 9px 16px; border-radius: 999px; border: 1.5px solid var(--linha); background: transparent; color: var(--cream); }
+.estados button { appearance: none; cursor: pointer; font: 700 .82rem 'Barlow', sans-serif; padding: 9px 16px; border-radius: 999px; border: 1.5px solid var(--linha); background: transparent; color: var(--cream); }
 .estados button:hover { border-color: var(--ember-2); }
 .estados button.on { background: var(--ember); border-color: var(--ember); color: #fff; cursor: default; }
 .copiar { display: flex; gap: 8px; margin-top: 10px; }
@@ -86,7 +86,7 @@ h1 { font-weight: 900; font-size: clamp(1.7rem, 4vw, 2.3rem); }
 .chat-form { display: flex; gap: 10px; padding: 12px; border-top: 1px solid rgba(255,255,255,.07); align-items: flex-end; }
 .chat-form textarea { flex: 1; font: inherit; color: var(--cream); background: var(--ink); border: 1.5px solid var(--linha); border-radius: 14px; padding: 11px 14px; resize: none; max-height: 140px; }
 .chat-form textarea:focus { outline: none; border-color: var(--ember); box-shadow: 0 0 0 3px rgba(242, 107, 29, .22); }
-.enviar { appearance: none; border: 0; cursor: pointer; font: 700 .95rem 'Manrope', sans-serif; color: #fff; background: linear-gradient(135deg, var(--ember), var(--ember-2)); border-radius: 999px; padding: 12px 22px; }
+.enviar { appearance: none; border: 0; cursor: pointer; font: 700 .95rem 'Barlow', sans-serif; color: #fff; background: linear-gradient(135deg, var(--ember), var(--ember-2)); border-radius: 999px; padding: 12px 22px; }
 .enviar[disabled] { opacity: .55; cursor: wait; }
 .chat-erro { color: #ffb4ab; font-size: .82rem; padding: 0 14px 10px; margin: 0; min-height: 0; }
 .nota { color: var(--muted); font-size: .82rem; margin: 12px 0 0; }
