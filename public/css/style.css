@@ -245,3 +245,12 @@ h1, h2, h3 { font-family: 'Fraunces', Georgia, serif; line-height: 1.1; margin: 
   padding: 13px 20px; border-radius: 999px; box-shadow: 0 10px 26px rgba(232, 87, 31, .45); transition: transform .2s;
 }
 .conv-float:hover { transform: translateY(-2px); }
+
+/* ---------- Conta do cliente ---------- */
+.link-conta { font-weight: 700; }
+.como-cliente { margin: 0; background: #fff3e6; border: 1px solid #f1d4b4; border-radius: 12px; padding: 10px 14px; font-size: .88rem; color: var(--text); }
+.como-cliente a { color: var(--ember); font-weight: 700; }
+.conta-needed { text-align: center; gap: 14px; }
+.conta-needed h3 { font-size: 1.5rem; }
+.conta-needed p { margin: 0; color: var(--muted); }
+.conta-needed .btn-ghost { color: var(--text) !important; }

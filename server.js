@@ -63,18 +63,11 @@ async function iniciarDb() {
     await pool.query('UPDATE orcamentos SET token = $1 WHERE id = $2', [novoToken(), r.id]);
   }
   await pool.query('CREATE UNIQUE INDEX IF NOT EXISTS orcamentos_token_idx ON orcamentos (token)');
+  await conta.iniciar(pool); // tabela de clientes + cliente_id nos pedidos
 }
 
 function novoToken() {
   return crypto.randomBytes(16).toString('hex');
-}
-
-if (process.env.DATABASE_URL) {
-  pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
-    ssl: { rejectUnauthorized: false }
-  });
-  iniciarDb().catch((e) => console.error('Erro a preparar a base de dados:', e.message));
 }
 
 // ---------- Utilitários ----------
@@ -143,6 +136,32 @@ function botao(url, texto) {
   return `<p><a href="${esc(url)}" style="display:inline-block;background:#e8571f;color:#fff;text-decoration:none;font-weight:700;padding:12px 24px;border-radius:999px">${esc(texto)}</a></p>`;
 }
 
+// ---------- Contas de cliente (registo, login, "os meus pedidos") ----------
+const conta = require('./conta')({
+  site,
+  getPool: () => pool,
+  wrap,
+  criarLimite,
+  segredo: () => process.env.SESSION_SECRET || process.env.ADMIN_PASSWORD || '',
+  lerCookie,
+  baseUrl,
+  emailEmBackground,
+  botao,
+  esc,
+  limpar,
+  ESTADOS_CLIENTE
+});
+app.use(conta.router);
+
+// Arranque da base de dados (depois de a conta estar montada)
+if (process.env.DATABASE_URL) {
+  pool = new Pool({
+    connectionString: process.env.DATABASE_URL,
+    ssl: { rejectUnauthorized: false }
+  });
+  iniciarDb().catch((e) => console.error('Erro a preparar a base de dados:', e.message));
+}
+
 // ---------- Rotas públicas ----------
 function listarGaleria() {
   const dir = path.join(__dirname, 'public', 'galeria');
@@ -157,9 +176,10 @@ function listarGaleria() {
   }
 }
 
-app.get('/', (req, res) => {
-  res.render('index', { site, galeria: listarGaleria() });
-});
+app.get('/', wrap(async (req, res) => {
+  const cliente = await conta.clienteDaRequest(req);
+  res.render('index', { site, galeria: listarGaleria(), cliente });
+}));
 
 app.get('/health', (req, res) => res.send('ok'));
 
@@ -181,9 +201,14 @@ app.post('/orcamento', limiteOrcamento, wrap(async (req, res) => {
   const b = req.body || {};
   if (b.website) return res.json({ ok: true }); // honeypot
 
+  const cliente = await conta.clienteDaRequest(req);
+  if (site.exigirConta && !cliente) {
+    return res.status(401).json({ ok: false, erro: 'Entra na tua conta (ou cria uma) para pedir orçamento.' });
+  }
+
   const o = {
-    nome: limpar(b.nome, 100),
-    contacto: limpar(b.contacto, 120),
+    nome: limpar(b.nome, 100) || (cliente ? cliente.nome : ''),
+    contacto: limpar(b.contacto, 120) || (cliente ? cliente.email : ''),
     tipo: limpar(b.tipo, 60),
     data_evento: reData.test(String(b.data_evento || '')) ? String(b.data_evento) : '',
     convidados: parseInt(b.convidados, 10) || null,
@@ -200,9 +225,9 @@ app.post('/orcamento', limiteOrcamento, wrap(async (req, res) => {
   if (pool) {
     token = novoToken();
     const ins = await pool.query(
-      `INSERT INTO orcamentos (nome, contacto, tipo, data_evento, convidados, localidade, mensagem, token)
-       VALUES ($1,$2,$3,$4,$5,$6,$7,$8) RETURNING id`,
-      [o.nome, o.contacto, o.tipo, o.data_evento, o.convidados, o.localidade, o.mensagem, token]
+      `INSERT INTO orcamentos (nome, contacto, tipo, data_evento, convidados, localidade, mensagem, token, cliente_id)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING id`,
+      [o.nome, o.contacto, o.tipo, o.data_evento, o.convidados, o.localidade, o.mensagem, token, cliente ? cliente.id : null]
     );
     id = ins.rows[0].id;
     if (o.mensagem) {
@@ -290,19 +315,43 @@ async function guardarMensagem(req, p, autor, texto) {
   }
 }
 
+// Pedidos com conta: só o dono (com sessão iniciada) vê a conversa.
+// Pedidos sem conta (anónimos): quem tiver o link privado.
+async function podeVerConversa(req, p) {
+  if (!p.cliente_id) return true;
+  const c = await conta.clienteDaRequest(req);
+  return !!c && c.id === p.cliente_id;
+}
+
 app.get('/conversa/:token', wrap(async (req, res) => {
   const p = await pedidoPorToken(req.params.token);
   if (!p) return res.status(404).render('404', { site });
+  if (!(await podeVerConversa(req, p))) {
+    return res.redirect(`/conta/entrar?next=${encodeURIComponent('/conversa/' + p.token)}`);
+  }
+  const cliente = await conta.clienteDaRequest(req);
   res.set('Cache-Control', 'no-store').set('X-Robots-Tag', 'noindex').render('conversa', {
     site,
     p,
+    cliente,
     estadoLabel: ESTADOS_CLIENTE[p.estado] || p.estado
   });
+}));
+
+// Guardar um pedido anónimo na conta de quem está com sessão iniciada (quem tem o link prova que é o dono)
+app.post('/conversa/:token/guardar', wrap(async (req, res) => {
+  const p = await pedidoPorToken(req.params.token);
+  if (!p) return res.status(404).render('404', { site });
+  const cliente = await conta.clienteDaRequest(req);
+  if (!cliente) return res.redirect(`/conta/entrar?next=${encodeURIComponent('/conversa/' + p.token)}`);
+  await pool.query('UPDATE orcamentos SET cliente_id = $1 WHERE id = $2 AND cliente_id IS NULL', [cliente.id, p.id]);
+  res.redirect('/conversa/' + p.token);
 }));
 
 app.get('/api/conversa/:token/mensagens', wrap(async (req, res) => {
   const p = await pedidoPorToken(req.params.token);
   if (!p) return res.status(404).json({ ok: false });
+  if (!(await podeVerConversa(req, p))) return res.status(401).json({ ok: false, erro: 'Entra na tua conta para ver esta conversa.' });
   const depois = parseInt(req.query.depois, 10) || 0;
   const mensagens = await listarMensagens(p.id, depois);
   await pool.query("UPDATE mensagens SET lida = TRUE WHERE orcamento_id = $1 AND autor = 'equipa' AND lida = FALSE", [p.id]);
@@ -316,6 +365,7 @@ const limiteMsgCliente = criarLimite(30, 10 * 60 * 1000, (req, res) =>
 app.post('/api/conversa/:token/mensagem', limiteMsgCliente, wrap(async (req, res) => {
   const p = await pedidoPorToken(req.params.token);
   if (!p) return res.status(404).json({ ok: false });
+  if (!(await podeVerConversa(req, p))) return res.status(401).json({ ok: false, erro: 'Entra na tua conta para enviar mensagens.' });
   const texto = limpar(req.body && req.body.texto, 1000);
   if (!texto) return res.status(400).json({ ok: false, erro: 'Escreve uma mensagem.' });
   await guardarMensagem(req, p, 'cliente', texto);

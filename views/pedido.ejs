@@ -30,6 +30,7 @@
             <% } else { %><%= p.contacto %><% } %>
           </span>
           <span><b>Evento</b><%= p.tipo || 'Evento' %></span>
+          <span><b>Conta</b><%= p.cliente_id ? 'Cliente com conta (conversa protegida por login)' : 'Sem conta (conversa pelo link privado)' %></span>
           <% if (p.data_evento) { %><span><b>Data</b><%= p.data_evento %></span><% } %>
           <% if (p.convidados) { %><span><b>Convidados</b><%= p.convidados %></span><% } %>
           <% if (p.localidade) { %><span><b>Local</b><%= p.localidade %></span><% } %>

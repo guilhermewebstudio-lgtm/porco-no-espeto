@@ -16,6 +16,7 @@
   var vazio = null;
   var aBuscar = false;
   var carregado = false;
+  var parar = false;
   var naoVistas = 0;
   var tituloBase = document.title;
 
@@ -55,12 +56,22 @@
     if (m.id > ultimo) ultimo = m.id;
   }
 
+  function sessaoExpirada() {
+    parar = true;
+    var destino = eu === 'cliente' ? '/conta/entrar?next=' + encodeURIComponent(location.pathname) : '/admin/login';
+    location.href = destino;
+  }
+
   function buscar(forcarScroll) {
+    if (parar) return;
     if (aBuscar) return;
     aBuscar = true;
     var perto = lista.scrollHeight - lista.scrollTop - lista.clientHeight < 80;
     fetch(urlGet + '?depois=' + ultimo, { credentials: 'same-origin', headers: { Accept: 'application/json' } })
-      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (r) {
+        if (r.status === 401) { sessaoExpirada(); return null; }
+        return r.ok ? r.json() : null;
+      })
       .then(function (d) {
         if (!d || !d.ok) return;
         d.mensagens.forEach(juntar);
@@ -95,8 +106,9 @@
       headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
       body: JSON.stringify({ texto: t })
     })
-      .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { return { ok: r.ok, j: j }; }); })
+      .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { return { ok: r.ok, status: r.status, j: j }; }); })
       .then(function (res) {
+        if (res.status === 401) { sessaoExpirada(); return; }
         if (res.ok && res.j.ok) {
           texto.value = '';
           texto.style.height = '';

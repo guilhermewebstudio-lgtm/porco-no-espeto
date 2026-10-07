@@ -34,6 +34,7 @@
       <a href="#formatos">Formatos</a>
       <a href="#galeria">Galeria</a>
       <a href="#contacto">Contactos</a>
+      <a href="/conta" class="link-conta"><%= cliente ? 'A minha conta' : 'Entrar' %></a>
       <a href="#orcamento" class="btn btn-small">Pedir orçamento</a>
     </nav>
     <button class="burger" id="burger" aria-label="Abrir menu" aria-expanded="false"><span></span><span></span></button>
@@ -153,14 +154,25 @@
           </ul>
         </div>
 
+        <% if (site.exigirConta && !cliente) { %>
+        <div class="form reveal conta-needed">
+          <h3>Entra para pedir orçamento</h3>
+          <p>Para acompanhares o teu pedido e falares com a nossa equipa, precisas de uma conta. Demora menos de um minuto.</p>
+          <a class="btn btn-full" href="/conta/criar?next=<%= encodeURIComponent('/#orcamento') %>">Criar conta</a>
+          <a class="btn btn-full btn-ghost" href="/conta/entrar?next=<%= encodeURIComponent('/#orcamento') %>">Já tenho conta</a>
+        </div>
+        <% } else { %>
         <form id="form" class="form reveal" novalidate>
+          <% if (cliente) { %>
+          <p class="como-cliente">A pedir como <b><%= cliente.nome %></b>. O pedido fica guardado na tua conta. <a href="/conta">Ver os meus pedidos</a></p>
+          <% } %>
           <div class="field">
             <label for="nome">Nome *</label>
-            <input id="nome" name="nome" type="text" autocomplete="name" required maxlength="100">
+            <input id="nome" name="nome" type="text" autocomplete="name" required maxlength="100" value="<%= cliente ? cliente.nome : '' %>">
           </div>
           <div class="field">
             <label for="contacto">Email ou telemóvel *</label>
-            <input id="contacto" name="contacto" type="text" autocomplete="email" required maxlength="120">
+            <input id="contacto" name="contacto" type="text" autocomplete="email" required maxlength="120" value="<%= cliente ? cliente.email : '' %>">
           </div>
           <div class="row">
             <div class="field">
@@ -194,6 +206,7 @@
           <p class="form-msg" id="msg" role="status" aria-live="polite"></p>
           <a class="btn btn-full btn-conversa" id="abrir-conversa" href="#" hidden>Abrir a minha conversa</a>
         </form>
+        <% } %>
       </div>
     </section>
 

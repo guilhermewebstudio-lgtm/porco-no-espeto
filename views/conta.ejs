@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+<%- include('partials/head') %>
+  <title>Os meus pedidos | <%= site.nome %></title>
+</head>
+<body class="cliente">
+  <header class="topo">
+    <a class="marca" href="/">🔥 <span>Porco no Espeto<small>à Bronze · Odivelas</small></span></a>
+    <div class="acoes">
+      <a href="/#orcamento">Novo pedido</a>
+      <form method="post" action="/conta/sair" style="margin:0"><button type="submit">Sair</button></form>
+    </div>
+  </header>
+
+  <main>
+    <h1>Olá, <%= cliente.nome %></h1>
+    <p class="sub">Aqui estão os teus pedidos de orçamento e as conversas com a nossa equipa. Só tu os vês.</p>
+
+    <% if (!pedidos.length) { %>
+      <p class="aviso">Ainda não tens pedidos nesta conta.</p>
+      <p style="margin-top:18px"><a class="enviar" href="/#orcamento">Pedir orçamento</a></p>
+    <% } else { %>
+      <div class="lista">
+        <% pedidos.forEach(function(p){ %>
+        <a class="item <%= p.nao_lidas > 0 ? 'atencao' : '' %>" href="/conversa/<%= p.token %>">
+          <div class="cab">
+            <h3><%= p.tipo || 'Evento' %><% if (p.nao_lidas > 0) { %><span class="bola"><%= p.nao_lidas %></span><% } %></h3>
+            <span class="estado <%= p.estado %>"><%= ESTADOS_CLIENTE[p.estado] || p.estado %></span>
+          </div>
+          <p class="quando">Enviado em <%= new Date(p.criado_em).toLocaleString('pt-PT', { timeZone: 'Europe/Lisbon', dateStyle: 'long', timeStyle: 'short' }) %></p>
+          <div class="dados">
+            <% if (p.data_evento) { %><span><b>Data</b><%= p.data_evento %></span><% } %>
+            <% if (p.convidados) { %><span><b>Convidados</b><%= p.convidados %></span><% } %>
+            <% if (p.localidade) { %><span><b>Local</b><%= p.localidade %></span><% } %>
+            <% if (p.nao_lidas > 0) { %><span><b>Resposta</b><%= p.nao_lidas %> <%= p.nao_lidas === 1 ? 'mensagem nova' : 'mensagens novas' %></span><% } %>
+          </div>
+        </a>
+        <% }) %>
+      </div>
+      <p class="nota">Conta de <%= cliente.email %></p>
+    <% } %>
+  </main>
+
+  <script>
+    // Atualiza de vez em quando para mostrar respostas novas
+    setInterval(function () { if (!document.hidden) location.reload(); }, 60000);
+  </script>
+</body>
+</html>

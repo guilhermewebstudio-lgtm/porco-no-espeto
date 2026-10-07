@@ -1,0 +1,110 @@
+<%
+  var titulos = { entrar: 'Entrar', criar: 'Criar conta', recuperar: 'Recuperar palavra-passe', redefinir: 'Nova palavra-passe' };
+  var descricoes = {
+    entrar: 'Entra para ver os teus pedidos e as conversas com a nossa equipa.',
+    criar: 'Com uma conta vês todos os teus pedidos e mensagens em qualquer dispositivo.',
+    recuperar: 'Escreve o teu email e enviamos-te um link para escolheres uma nova palavra-passe.',
+    redefinir: 'Escolhe uma nova palavra-passe para a tua conta.'
+  };
+  var nextQ = next ? '?next=' + encodeURIComponent(next) : '';
+%><!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title><%= titulos[modo] %> | <%= site.nome %></title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,700;9..144,900&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/auth.css">
+</head>
+<body>
+  <main class="box">
+    <div class="chama">🔥</div>
+    <h1><%= titulos[modo] %></h1>
+    <p class="sub">Porco no Espeto · Odivelas</p>
+    <p class="desc"><%= descricoes[modo] %></p>
+
+    <% if (aviso) { %><p class="aviso" role="status"><%= aviso %></p><% } %>
+
+    <% if (modo === 'entrar') { %>
+      <form method="post" action="/conta/entrar">
+        <input type="hidden" name="next" value="<%= next %>">
+        <div>
+          <label for="email">Email</label>
+          <div class="campo"><input id="email" name="email" type="email" value="<%= email %>" required autofocus autocomplete="email" maxlength="200"></div>
+        </div>
+        <div>
+          <label for="password">Palavra-passe</label>
+          <div class="campo">
+            <input id="password" name="password" type="password" class="com-ver" required autocomplete="current-password" maxlength="200">
+            <button type="button" class="ver" data-alvo="password" aria-label="Mostrar palavra-passe">Mostrar</button>
+          </div>
+        </div>
+        <% if (erro) { %><p class="erro" role="alert"><%= erro %></p><% } %>
+        <button type="submit" class="btn">Entrar</button>
+      </form>
+      <div class="aux">
+        <a href="/conta/criar<%= nextQ %>">Criar conta</a>
+        <a href="/conta/recuperar">Esqueci a palavra-passe</a>
+      </div>
+
+    <% } else if (modo === 'criar') { %>
+      <form method="post" action="/conta/criar">
+        <input type="hidden" name="next" value="<%= next %>">
+        <div>
+          <label for="nome">Nome</label>
+          <div class="campo"><input id="nome" name="nome" type="text" value="<%= nome %>" required autofocus autocomplete="name" maxlength="100"></div>
+        </div>
+        <div>
+          <label for="email">Email</label>
+          <div class="campo"><input id="email" name="email" type="email" value="<%= email %>" required autocomplete="email" maxlength="200"></div>
+        </div>
+        <div>
+          <label for="password">Palavra-passe</label>
+          <div class="campo">
+            <input id="password" name="password" type="password" class="com-ver" required minlength="8" autocomplete="new-password" maxlength="200">
+            <button type="button" class="ver" data-alvo="password" aria-label="Mostrar palavra-passe">Mostrar</button>
+          </div>
+          <p class="dica">Pelo menos 8 caracteres.</p>
+        </div>
+        <% if (erro) { %><p class="erro" role="alert"><%= erro %></p><% } %>
+        <button type="submit" class="btn">Criar conta</button>
+      </form>
+      <div class="aux"><a href="/conta/entrar<%= nextQ %>">Já tenho conta</a></div>
+
+    <% } else if (modo === 'recuperar') { %>
+      <% if (erro) { %><p class="erro" role="alert" style="margin-bottom:14px"><%= erro %></p><% } %>
+      <% if (!aviso) { %>
+      <form method="post" action="/conta/recuperar">
+        <div>
+          <label for="email">Email</label>
+          <div class="campo"><input id="email" name="email" type="email" value="<%= email %>" required autofocus autocomplete="email" maxlength="200"></div>
+        </div>
+        <button type="submit" class="btn">Enviar link</button>
+      </form>
+      <% } %>
+      <div class="aux"><a href="/conta/entrar">← Voltar a entrar</a></div>
+
+    <% } else if (modo === 'redefinir') { %>
+      <form method="post" action="/conta/redefinir/<%= token %>">
+        <div>
+          <label for="password">Nova palavra-passe</label>
+          <div class="campo">
+            <input id="password" name="password" type="password" class="com-ver" required autofocus minlength="8" autocomplete="new-password" maxlength="200">
+            <button type="button" class="ver" data-alvo="password" aria-label="Mostrar palavra-passe">Mostrar</button>
+          </div>
+          <p class="dica">Pelo menos 8 caracteres.</p>
+        </div>
+        <% if (erro) { %><p class="erro" role="alert"><%= erro %></p><% } %>
+        <button type="submit" class="btn">Guardar palavra-passe</button>
+      </form>
+    <% } %>
+
+    <a class="voltar" href="/">← Voltar ao site</a>
+  </main>
+
+  <script src="/js/auth.js"></script>
+</body>
+</html>

@@ -9,6 +9,8 @@ module.exports = {
   telefone: process.env.PHONE_DISPLAY || '',
   morada: process.env.ADDRESS || 'Odivelas',
   horario: 'Orçamentos respondidos em menos de 24h',
+  // EXIGIR_CONTA=1 no Render: só quem tiver conta consegue pedir orçamento
+  exigirConta: process.env.EXIGIR_CONTA === '1',
 
   eventos: [
     { icone: '💍', titulo: 'Casamentos', texto: 'Um banquete de sabor que os convidados vão recordar. Porco no espeto assado devagar, ao ritmo da festa.' },

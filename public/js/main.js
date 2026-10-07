@@ -81,6 +81,9 @@
     }
   } catch (e) {}
 
+  // Sem formulário (modo "só com conta" e visitante sem sessão): nada mais a preparar
+  if (!document.getElementById('form')) return;
+
   // Aviso de data já ocupada
   var campoData = document.getElementById('data_evento');
   var dica = document.getElementById('dica-data');

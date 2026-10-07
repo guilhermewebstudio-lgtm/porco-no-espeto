@@ -7,7 +7,9 @@
 <body class="cliente">
   <header class="topo">
     <a class="marca" href="/">🔥 <span>Porco no Espeto<small>à Bronze · Odivelas</small></span></a>
-    <div class="acoes"><a href="/">← Voltar ao site</a></div>
+    <div class="acoes">
+      <% if (cliente) { %><a href="/conta">Os meus pedidos</a><% } else { %><a href="/">← Voltar ao site</a><% } %>
+    </div>
   </header>
 
   <main>
@@ -25,6 +27,23 @@
       </div>
     </section>
 
+    <% if (!p.cliente_id) { %>
+    <section class="painel">
+      <h2>Guarda este pedido na tua conta</h2>
+      <p class="nota" style="margin:0 0 14px">Assim vês todos os teus pedidos e mensagens em qualquer dispositivo, sem precisares deste link.</p>
+      <% if (cliente) { %>
+        <form method="post" action="/conversa/<%= p.token %>/guardar" style="margin:0">
+          <button type="submit" class="enviar">Guardar na minha conta</button>
+        </form>
+      <% } else { %>
+        <div class="acoes">
+          <a class="enviar" href="/conta/criar?next=<%= encodeURIComponent('/conversa/' + p.token) %>">Criar conta</a>
+          <a class="btn-linha" href="/conta/entrar?next=<%= encodeURIComponent('/conversa/' + p.token) %>">Já tenho conta</a>
+        </div>
+      <% } %>
+    </section>
+    <% } %>
+
     <section class="chat" id="chat"
       data-eu="cliente"
       data-get="/api/conversa/<%= p.token %>/mensagens"
@@ -38,15 +57,21 @@
       </form>
     </section>
 
-    <p class="nota">Respondemos normalmente em menos de 24 horas. Guarda este link, é a tua conversa privada. <% if (/@/.test(p.contacto)) { %>Avisamos-te por email quando respondermos.<% } else { %>Volta a esta página mais tarde para ver a resposta.<% } %></p>
+    <% if (p.cliente_id) { %>
+      <p class="nota">Esta conversa é privada: só tu, com a tua conta, e a nossa equipa a veem. Respondemos normalmente em menos de 24 horas.<% if (/@/.test(p.contacto)) { %> Avisamos-te por email quando respondermos.<% } %></p>
+    <% } else { %>
+      <p class="nota">Respondemos normalmente em menos de 24 horas. Guarda este link, é a tua conversa privada. <% if (/@/.test(p.contacto)) { %>Avisamos-te por email quando respondermos.<% } else { %>Volta a esta página mais tarde para ver a resposta.<% } %></p>
+    <% } %>
     <% if (site.whatsapp) { %>
       <p class="nota">Preferes WhatsApp? <a href="https://wa.me/<%= site.whatsapp %>" target="_blank" rel="noopener" style="text-decoration:underline">Fala connosco por lá</a>.</p>
     <% } %>
   </main>
 
+  <% if (!p.cliente_id) { %>
   <script>
     try { localStorage.setItem('pe_conversa', location.pathname); } catch (e) {}
   </script>
+  <% } %>
   <script src="/js/chat.js"></script>
 </body>
 </html>

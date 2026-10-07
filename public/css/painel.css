@@ -156,3 +156,7 @@ h1 { font-weight: 900; font-size: clamp(1.7rem, 4vw, 2.3rem); }
 @keyframes toastEntra { from { opacity: 0; transform: translateX(24px); } to { opacity: 1; transform: none; } }
 @media (prefers-reduced-motion: reduce) { .toast { animation: none; transition: none; } }
 @media (max-width: 560px) { .toasts { top: 120px; } }
+
+/* ---------- Contas de cliente ---------- */
+a.enviar { text-decoration: none; display: inline-block; text-align: center; }
+.cliente .acoes a.enviar { padding: 10px 20px; }
