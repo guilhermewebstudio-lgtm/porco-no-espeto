@@ -90,6 +90,9 @@ h1, h2 { text-transform: uppercase; }
 .links a { text-decoration: none; color: #fff; font-weight: 600; font-size: 1rem; }
 .links a:hover { color: var(--flame); }
 .links a.btn:hover { color: var(--ink); }
+.form-sair { margin: 0; }
+.form-sair button { color: #fff; font-weight: 600; font-size: 1rem; }
+.form-sair button:hover { color: var(--flame); }
 .burger { display: none; width: 44px; height: 44px; position: relative; }
 .burger span { position: absolute; left: 10px; right: 10px; height: 2px; background: #fff; transition: transform .3s, top .3s; }
 .burger span:first-child { top: 18px; }

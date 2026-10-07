@@ -132,7 +132,7 @@ module.exports = function montarConta(d) {
   router.get('/conta/entrar', wrap(async (req, res) => {
     if (semBase(req, res)) return;
     const next = destinoSeguro(req.query.next, '');
-    if (await clienteDaRequest(req)) return res.redirect(next || '/conta');
+    if (await clienteDaRequest(req)) return res.redirect(next || '/');
     const aviso = next.startsWith('/conversa/') ? 'Esta conversa é privada. Entra na tua conta para a ver.' : '';
     res.set('Cache-Control', 'no-store').render('conta-auth', vista(req, 'entrar', { aviso }));
   }));
@@ -148,13 +148,13 @@ module.exports = function montarConta(d) {
       return res.status(401).render('conta-auth', vista(req, 'entrar', { erro: 'Email ou palavra-passe incorretos.', email }));
     }
     iniciarSessao(req, res, c);
-    res.redirect(destinoSeguro(req.body.next, '/conta'));
+    res.redirect(destinoSeguro(req.body.next, '/'));
   }));
 
   // ---------- Criar conta ----------
   router.get('/conta/criar', wrap(async (req, res) => {
     if (semBase(req, res)) return;
-    if (await clienteDaRequest(req)) return res.redirect(destinoSeguro(req.query.next, '/conta'));
+    if (await clienteDaRequest(req)) return res.redirect(destinoSeguro(req.query.next, '/'));
     res.set('Cache-Control', 'no-store').render('conta-auth', vista(req, 'criar'));
   }));
 
@@ -179,7 +179,7 @@ module.exports = function montarConta(d) {
       [nome, email, await hashPassword(password)]
     );
     iniciarSessao(req, res, ins.rows[0]);
-    res.redirect(destinoSeguro(b.next, '/conta'));
+    res.redirect(destinoSeguro(b.next, '/'));
   }));
 
   router.post('/conta/sair', (req, res) => {
@@ -242,7 +242,7 @@ module.exports = function montarConta(d) {
     const novo = await hashPassword(password);
     await getPool().query('UPDATE clientes SET password = $1, reset_hash = NULL, reset_exp = NULL WHERE id = $2', [novo, c.id]);
     iniciarSessao(req, res, { id: c.id, password: novo });
-    res.redirect('/conta');
+    res.redirect('/');
   }));
 
   return { router, iniciar, clienteDaRequest };

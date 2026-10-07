@@ -35,7 +35,12 @@
       <a href="#formatos">Formatos</a>
       <a href="#galeria">Galeria</a>
       <a href="#contacto">Contactos</a>
-      <a href="/conta" class="link-conta"><%= cliente ? 'A minha conta' : 'Entrar' %></a>
+      <% if (cliente) { %>
+      <a href="/conta" class="link-conta">Os meus pedidos</a>
+      <form method="post" action="/conta/sair" class="form-sair"><button type="submit">Sair</button></form>
+      <% } else { %>
+      <a href="/conta" class="link-conta">Entrar</a>
+      <% } %>
       <a href="#orcamento" class="btn btn-small">Pedir orçamento</a>
     </nav>
     <button class="burger" id="burger" aria-label="Abrir menu" aria-expanded="false"><span></span><span></span></button>
