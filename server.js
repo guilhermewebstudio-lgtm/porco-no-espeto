@@ -53,29 +53,36 @@ function listarGaleria() {
   }
 }
 
-// ---------- Rotas ----------
+// ---------- Rotas públicas ----------
 app.get('/', (req, res) => {
   res.render('index', { site, galeria: listarGaleria() });
 });
 
 app.get('/health', (req, res) => res.send('ok'));
 
-// Rate limit simples em memória (5 pedidos por IP / 10 min)
-const tentativas = new Map();
-function limite(req, res, next) {
-  const ip = req.ip;
-  const agora = Date.now();
-  const lista = (tentativas.get(ip) || []).filter((t) => agora - t < 10 * 60 * 1000);
-  if (lista.length >= 5) {
-    return res.status(429).json({ ok: false, erro: 'Demasiados pedidos. Tenta mais tarde ou fala connosco por WhatsApp.' });
-  }
-  lista.push(agora);
-  tentativas.set(ip, lista);
-  next();
+// Rate limit simples em memória
+function criarLimite(max, janelaMs, mensagem) {
+  const mapa = new Map();
+  return function (req, res, next) {
+    const agora = Date.now();
+    const lista = (mapa.get(req.ip) || []).filter((t) => agora - t < janelaMs);
+    if (lista.length >= max) return mensagem(req, res);
+    lista.push(agora);
+    mapa.set(req.ip, lista);
+    next();
+  };
 }
+
+const limiteOrcamento = criarLimite(5, 10 * 60 * 1000, (req, res) =>
+  res.status(429).json({ ok: false, erro: 'Demasiados pedidos. Tenta mais tarde ou fala connosco por WhatsApp.' })
+);
 
 function limpar(v, max = 500) {
   return String(v || '').trim().slice(0, max);
+}
+
+function esc(s) {
+  return String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 }
 
 async function enviarEmail(o) {
@@ -106,11 +113,7 @@ async function enviarEmail(o) {
   if (!resp.ok) console.error('Brevo erro:', resp.status, await resp.text());
 }
 
-function esc(s) {
-  return String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-}
-
-app.post('/orcamento', limite, async (req, res) => {
+app.post('/orcamento', limiteOrcamento, async (req, res) => {
   const b = req.body || {};
   if (b.website) return res.json({ ok: true }); // honeypot
 
@@ -144,22 +147,86 @@ app.post('/orcamento', limite, async (req, res) => {
   }
 });
 
-// ---------- Admin simples (lista de pedidos) ----------
-function auth(req, res, next) {
-  const pass = process.env.ADMIN_PASSWORD;
-  if (!pass) return res.status(404).send('Not found');
-  const h = req.headers.authorization || '';
-  const [tipo, cred] = h.split(' ');
-  if (tipo === 'Basic' && cred) {
-    const [, p] = Buffer.from(cred, 'base64').toString().split(/:(.*)/s);
-    const a = Buffer.from(p || '');
-    const b = Buffer.from(pass);
-    if (a.length === b.length && crypto.timingSafeEqual(a, b)) return next();
-  }
-  res.set('WWW-Authenticate', 'Basic realm="Admin"').status(401).send('Autenticação necessária');
+// ---------- Admin: login com palavra-passe + cookie assinado ----------
+const COOKIE = 'pe_admin';
+const SESSAO_MS = 7 * 24 * 60 * 60 * 1000; // 7 dias
+
+function segredo() {
+  return process.env.SESSION_SECRET || process.env.ADMIN_PASSWORD || '';
 }
 
-app.get('/admin', auth, async (req, res) => {
+function assinar(valor) {
+  return crypto.createHmac('sha256', segredo()).update(valor).digest('hex');
+}
+
+function criarToken() {
+  const exp = String(Date.now() + SESSAO_MS);
+  return exp + '.' + assinar(exp);
+}
+
+function tokenValido(token) {
+  if (!token || !segredo()) return false;
+  const [exp, sig] = token.split('.');
+  if (!exp || !sig || Number(exp) < Date.now()) return false;
+  const esperado = Buffer.from(assinar(exp));
+  const recebido = Buffer.from(sig);
+  return esperado.length === recebido.length && crypto.timingSafeEqual(esperado, recebido);
+}
+
+function lerCookie(req, nome) {
+  const h = req.headers.cookie || '';
+  for (const parte of h.split(';')) {
+    const i = parte.indexOf('=');
+    if (i > -1 && parte.slice(0, i).trim() === nome) return decodeURIComponent(parte.slice(i + 1).trim());
+  }
+  return '';
+}
+
+function passwordCorreta(tentativa) {
+  const real = process.env.ADMIN_PASSWORD || '';
+  if (!real) return false;
+  const a = crypto.createHash('sha256').update(String(tentativa)).digest();
+  const b = crypto.createHash('sha256').update(real).digest();
+  return crypto.timingSafeEqual(a, b);
+}
+
+function definirCookie(req, res, valor, maxAgeSeg) {
+  const partes = [`${COOKIE}=${encodeURIComponent(valor)}`, 'Path=/admin', 'HttpOnly', 'SameSite=Lax', `Max-Age=${maxAgeSeg}`];
+  if (req.secure) partes.push('Secure');
+  res.setHeader('Set-Cookie', partes.join('; '));
+}
+
+function exigirAdmin(req, res, next) {
+  if (!process.env.ADMIN_PASSWORD) return res.status(404).render('404', { site });
+  if (tokenValido(lerCookie(req, COOKIE))) return next();
+  res.redirect('/admin/login');
+}
+
+const limiteLogin = criarLimite(8, 10 * 60 * 1000, (req, res) =>
+  res.status(429).render('login', { site, erro: 'Demasiadas tentativas. Tenta novamente daqui a 10 minutos.' })
+);
+
+app.get('/admin/login', (req, res) => {
+  if (!process.env.ADMIN_PASSWORD) return res.status(404).render('404', { site });
+  if (tokenValido(lerCookie(req, COOKIE))) return res.redirect('/admin');
+  res.set('Cache-Control', 'no-store').render('login', { site, erro: '' });
+});
+
+app.post('/admin/login', limiteLogin, (req, res) => {
+  if (!process.env.ADMIN_PASSWORD) return res.status(404).render('404', { site });
+  if (passwordCorreta(req.body && req.body.password)) {
+    definirCookie(req, res, criarToken(), SESSAO_MS / 1000);
+    return res.redirect('/admin');
+  }
+  res.status(401).render('login', { site, erro: 'Palavra-passe incorreta.' });
+});
+
+app.post('/admin/logout', (req, res) => {
+  definirCookie(req, res, '', 0);
+  res.redirect('/admin/login');
+});
+
+app.get('/admin', exigirAdmin, async (req, res) => {
   let pedidos = [];
   if (pool) {
     try {
@@ -168,7 +235,7 @@ app.get('/admin', auth, async (req, res) => {
       console.error(e.message);
     }
   }
-  res.render('admin', { site, pedidos, temDb: !!pool });
+  res.set('Cache-Control', 'no-store').render('admin', { site, pedidos, temDb: !!pool });
 });
 
 app.use((req, res) => res.status(404).render('404', { site }));
