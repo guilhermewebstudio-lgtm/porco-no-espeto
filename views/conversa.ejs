@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+<%- include('partials/head') %>
+  <title>A tua conversa | <%= site.nome %></title>
+</head>
+<body class="cliente">
+  <header class="topo">
+    <a class="marca" href="/">🔥 <span>Porco no Espeto<small>à Bronze · Odivelas</small></span></a>
+    <div class="acoes"><a href="/">← Voltar ao site</a></div>
+  </header>
+
+  <main>
+    <h1>O teu pedido</h1>
+    <section class="painel" style="margin-top:16px">
+      <div class="cab">
+        <h2><%= p.tipo || 'Evento' %></h2>
+        <span class="estado <%= p.estado %>" id="estado-badge"><%= estadoLabel %></span>
+      </div>
+      <div class="resumo">
+        <span><b>Nome</b><%= p.nome %></span>
+        <% if (p.data_evento) { %><span><b>Data</b><%= p.data_evento %></span><% } %>
+        <% if (p.convidados) { %><span><b>Convidados</b><%= p.convidados %></span><% } %>
+        <% if (p.localidade) { %><span><b>Local</b><%= p.localidade %></span><% } %>
+      </div>
+    </section>
+
+    <section class="chat" id="chat"
+      data-eu="cliente"
+      data-get="/api/conversa/<%= p.token %>/mensagens"
+      data-post="/api/conversa/<%= p.token %>/mensagem">
+      <div class="chat-cab"><h2>Conversa com a nossa equipa</h2></div>
+      <div class="msgs" id="msgs" aria-live="polite"></div>
+      <p class="chat-erro" id="chat-erro" role="alert"></p>
+      <form class="chat-form" id="chat-form">
+        <textarea id="chat-texto" rows="2" maxlength="1000" placeholder="Escreve a tua mensagem..." required></textarea>
+        <button type="submit" class="enviar" id="chat-enviar">Enviar</button>
+      </form>
+    </section>
+
+    <p class="nota">Respondemos normalmente em menos de 24 horas. Guarda este link, é a tua conversa privada. <% if (/@/.test(p.contacto)) { %>Avisamos-te por email quando respondermos.<% } else { %>Volta a esta página mais tarde para ver a resposta.<% } %></p>
+    <% if (site.whatsapp) { %>
+      <p class="nota">Preferes WhatsApp? <a href="https://wa.me/<%= site.whatsapp %>" target="_blank" rel="noopener" style="text-decoration:underline">Fala connosco por lá</a>.</p>
+    <% } %>
+  </main>
+
+  <script>
+    try { localStorage.setItem('pe_conversa', location.pathname); } catch (e) {}
+  </script>
+  <script src="/js/chat.js"></script>
+</body>
+</html>

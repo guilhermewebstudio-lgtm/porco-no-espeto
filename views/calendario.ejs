@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+<%- include('partials/head') %>
+  <title>Calendário | <%= site.nome %></title>
+</head>
+<body>
+  <%- include('partials/topo', { ativa: 'calendario' }) %>
+
+  <main>
+    <% if (!temDb) { %>
+      <h1>Calendário</h1>
+      <p class="aviso" style="margin-top:16px">Falta definir a <code>DATABASE_URL</code> no Render para o calendário funcionar.</p>
+    <% } else { %>
+      <div class="cal-nav">
+        <h1><%= mesLabel %></h1>
+        <div class="setas">
+          <a class="btn-linha" href="/admin/calendario?mes=<%= prev %>">← Anterior</a>
+          <a class="btn-linha" href="/admin/calendario?mes=<%= mesAtual %>">Hoje</a>
+          <a class="btn-linha" href="/admin/calendario?mes=<%= next %>">Seguinte →</a>
+        </div>
+      </div>
+
+      <table class="cal">
+        <thead>
+          <tr><th>Seg</th><th>Ter</th><th>Qua</th><th>Qui</th><th>Sex</th><th>Sáb</th><th>Dom</th></tr>
+        </thead>
+        <tbody>
+          <% semanas.forEach(function(sem){ %>
+          <tr>
+            <% sem.forEach(function(c){ %>
+              <% if (!c) { %>
+                <td class="vazia"></td>
+              <% } else { %>
+                <td class="<%= c.hoje ? 'hoje' : '' %>">
+                  <span class="dia"><%= c.dia %></span>
+                  <% c.eventos.forEach(function(e){ %>
+                    <a class="chip <%= e.estado %>" href="/admin/pedido/<%= e.id %>" title="<%= e.nome %> · <%= e.tipo || 'Evento' %><%= e.convidados ? ' · ' + e.convidados + ' convidados' : '' %>">
+                      <%= e.nome %>
+                    </a>
+                  <% }) %>
+                </td>
+              <% } %>
+            <% }) %>
+          </tr>
+          <% }) %>
+        </tbody>
+      </table>
+
+      <div class="legenda">
+        <span class="c">Evento confirmado</span>
+        <span class="p">Pedido por confirmar</span>
+      </div>
+      <p class="nota">Os eventos entram no calendário pela data que o cliente indicou no pedido. Pedidos recusados não aparecem.</p>
+    <% } %>
+  </main>
+</body>
+</html>

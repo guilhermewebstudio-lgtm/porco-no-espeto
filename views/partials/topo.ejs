@@ -1,0 +1,11 @@
+<header class="topo">
+  <a class="marca" href="/admin">🔥 <span>Porco no Espeto<small>Área reservada</small></span></a>
+  <nav class="nav-admin">
+    <a href="/admin" class="<%= ativa === 'pedidos' ? 'on' : '' %>">Pedidos<% if (typeof atencaoTotal !== 'undefined' && atencaoTotal > 0) { %><span class="bola"><%= atencaoTotal %></span><% } %></a>
+    <a href="/admin/calendario" class="<%= ativa === 'calendario' ? 'on' : '' %>">Calendário</a>
+  </nav>
+  <div class="acoes">
+    <a href="/" target="_blank" rel="noopener">Ver site</a>
+    <form method="post" action="/admin/logout" style="margin:0"><button type="submit">Sair</button></form>
+  </div>
+</header>

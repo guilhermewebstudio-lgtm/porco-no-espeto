@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+<%- include('partials/head') %>
+  <title><%= p.nome %> | Pedidos | <%= site.nome %></title>
+</head>
+<body>
+  <%- include('partials/topo', { ativa: 'pedidos' }) %>
+
+  <main>
+    <a class="voltar" href="/admin">← Todos os pedidos</a>
+
+    <% if (aviso === 'conflito') { %>
+      <p class="aviso perigo">Atenção: já existe outro evento confirmado no dia <%= p.data_evento %>. Confirma que consegues atender os dois.</p>
+    <% } else if (ocupada) { %>
+      <p class="aviso perigo">Já há um evento confirmado no dia <%= p.data_evento %>. Vê o <a href="/admin/calendario?mes=<%= p.data_evento.slice(0,7) %>" style="text-decoration:underline">calendário</a> antes de confirmar.</p>
+    <% } %>
+
+    <div class="grade">
+      <section class="painel">
+        <div class="cab">
+          <h1 style="font-size:1.7rem"><%= p.nome %></h1>
+          <span class="estado <%= p.estado %>" id="estado-badge"><%= ESTADOS[p.estado] || p.estado %></span>
+        </div>
+        <p class="quando">Recebido em <%= new Date(p.criado_em).toLocaleString('pt-PT', { timeZone: 'Europe/Lisbon', dateStyle: 'long', timeStyle: 'short' }) %></p>
+        <div class="dados" style="flex-direction:column;gap:6px">
+          <span><b>Contacto</b>
+            <% if (/@/.test(p.contacto)) { %><a href="mailto:<%= p.contacto %>"><%= p.contacto %></a>
+            <% } else if (/^[\d\s+()-]{6,}$/.test(p.contacto)) { %><a href="tel:<%= p.contacto.replace(/[^\d+]/g, '') %>"><%= p.contacto %></a>
+            <% } else { %><%= p.contacto %><% } %>
+          </span>
+          <span><b>Evento</b><%= p.tipo || 'Evento' %></span>
+          <% if (p.data_evento) { %><span><b>Data</b><%= p.data_evento %></span><% } %>
+          <% if (p.convidados) { %><span><b>Convidados</b><%= p.convidados %></span><% } %>
+          <% if (p.localidade) { %><span><b>Local</b><%= p.localidade %></span><% } %>
+        </div>
+      </section>
+
+      <section class="painel">
+        <h2>Estado do pedido</h2>
+        <div class="estados">
+          <% Object.keys(ESTADOS).forEach(function(k){ %>
+            <form method="post" action="/admin/pedido/<%= p.id %>/estado">
+              <input type="hidden" name="estado" value="<%= k %>">
+              <button type="submit" class="<%= p.estado === k ? 'on' : '' %>" <%= p.estado === k ? 'disabled' : '' %>><%= ESTADOS[k] %></button>
+            </form>
+          <% }) %>
+        </div>
+        <p class="nota">"Confirmado" bloqueia a data no calendário e avisa clientes novos que a data está ocupada.</p>
+        <div class="copiar">
+          <input type="text" readonly value="<%= linkConversa %>" id="link-conversa" aria-label="Link da conversa do cliente">
+          <button type="button" class="btn-linha" id="copiar">Copiar link</button>
+        </div>
+        <p class="nota">Link privado da conversa, útil para enviar ao cliente por WhatsApp ou SMS.</p>
+      </section>
+    </div>
+
+    <section class="chat" id="chat"
+      data-eu="equipa"
+      data-get="/admin/api/pedido/<%= p.id %>/mensagens"
+      data-post="/admin/api/pedido/<%= p.id %>/mensagem">
+      <div class="chat-cab"><h2>Conversa com <%= p.nome %></h2></div>
+      <div class="msgs" id="msgs" aria-live="polite"></div>
+      <p class="chat-erro" id="chat-erro" role="alert"></p>
+      <form class="chat-form" id="chat-form">
+        <textarea id="chat-texto" rows="2" maxlength="1000" placeholder="Escreve a resposta... (Enter envia, Shift+Enter muda de linha)" required></textarea>
+        <button type="submit" class="enviar" id="chat-enviar">Enviar</button>
+      </form>
+    </section>
+    <p class="nota">Se o cliente deixou email, recebe um aviso quando respondes (só no primeiro aviso de cada vez, para não encher a caixa dele).</p>
+  </main>
+
+  <script>
+    document.getElementById('copiar').addEventListener('click', function () {
+      var i = document.getElementById('link-conversa');
+      i.select();
+      try { navigator.clipboard.writeText(i.value); } catch (e) { document.execCommand('copy'); }
+      this.textContent = 'Copiado!';
+      var b = this; setTimeout(function () { b.textContent = 'Copiar link'; }, 1800);
+    });
+  </script>
+  <script src="/js/chat.js"></script>
+</body>
+</html>

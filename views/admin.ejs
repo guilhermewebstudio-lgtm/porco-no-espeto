@@ -1,83 +1,58 @@
 <!DOCTYPE html>
 <html lang="pt-PT">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="robots" content="noindex, nofollow">
+<%- include('partials/head') %>
   <title>Pedidos | <%= site.nome %></title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,700;9..144,900&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <style>
-    *, *::before, *::after { box-sizing: border-box; }
-    body { margin: 0; font-family: 'Manrope', system-ui, sans-serif; background: #17110d; color: #f6ecdc; line-height: 1.55; }
-    .topo { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 16px 4%; background: #0f0a07; border-bottom: 1px solid rgba(255,255,255,.07); position: sticky; top: 0; z-index: 5; }
-    .marca { display: flex; align-items: center; gap: 10px; font-family: 'Fraunces', Georgia, serif; font-weight: 700; font-size: 1.05rem; }
-    .marca small { display: block; font-family: 'Manrope', sans-serif; font-weight: 600; font-size: .66rem; letter-spacing: .16em; text-transform: uppercase; color: #ff7a3d; }
-    .acoes { display: flex; align-items: center; gap: 10px; }
-    .acoes a, .acoes button {
-      appearance: none; background: transparent; border: 1.5px solid #4a3626; color: #f6ecdc; cursor: pointer;
-      font: 600 .85rem 'Manrope', sans-serif; padding: 8px 16px; border-radius: 999px; text-decoration: none;
-    }
-    .acoes a:hover, .acoes button:hover { border-color: #ff7a3d; color: #ff7a3d; }
-    main { width: min(900px, 92%); margin: 0 auto; padding: 34px 0 60px; }
-    h1 { font-family: 'Fraunces', Georgia, serif; font-weight: 900; font-size: clamp(1.7rem, 4vw, 2.3rem); margin: 0; }
-    .total { color: #bba68a; margin: 4px 0 26px; }
-    .aviso { background: #2a1a10; border: 1px solid #4a3626; padding: 16px 18px; border-radius: 12px; color: #d9c7ab; }
-    .lista { display: grid; gap: 14px; }
-    .item { background: #221812; border: 1px solid rgba(255,255,255,.06); border-left: 4px solid #e8571f; padding: 18px 20px; border-radius: 14px; }
-    .cab { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
-    .item h3 { margin: 0; font-family: 'Fraunces', Georgia, serif; font-size: 1.25rem; }
-    .tag { background: rgba(232, 87, 31, .18); color: #ff9a68; font-size: .74rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 999px; }
-    .quando { color: #a89580; font-size: .82rem; margin: 2px 0 10px; }
-    .dados { display: flex; flex-wrap: wrap; gap: 8px 22px; font-size: .92rem; }
-    .dados b { color: #ff7a3d; font-weight: 700; font-size: .72rem; letter-spacing: .1em; text-transform: uppercase; margin-right: 6px; }
-    .dados a { color: inherit; }
-    .msg { margin-top: 12px; padding-top: 12px; border-top: 1px dashed #4a3626; white-space: pre-wrap; color: #e6d6bf; font-size: .93rem; }
-  </style>
 </head>
 <body>
-  <header class="topo">
-    <div class="marca">🔥 <span>Porco no Espeto<small>Área reservada</small></span></div>
-    <div class="acoes">
-      <a href="/" target="_blank" rel="noopener">Ver site</a>
-      <form method="post" action="/admin/logout" style="margin:0"><button type="submit">Sair</button></form>
-    </div>
-  </header>
+  <%- include('partials/topo', { ativa: 'pedidos' }) %>
 
   <main>
     <h1>Pedidos de orçamento</h1>
+
     <% if (!temDb) { %>
-      <p class="total">Base de dados não configurada</p>
-      <p class="aviso">Falta definir a <code>DATABASE_URL</code> no Render. Por agora os pedidos só chegam por email (se o Brevo estiver configurado).</p>
-    <% } else if (!pedidos.length) { %>
-      <p class="total">Ainda não há pedidos</p>
-      <p class="aviso">Quando alguém preencher o formulário do site, o pedido aparece aqui.</p>
+      <p class="sub">Base de dados não configurada</p>
+      <p class="aviso">Falta definir a <code>DATABASE_URL</code> no Render. Sem ela não há lista de pedidos, nem chat, nem calendário.</p>
     <% } else { %>
-      <p class="total"><%= pedidos.length %> <%= pedidos.length === 1 ? 'pedido' : 'pedidos' %> (mais recentes primeiro)</p>
-      <div class="lista">
-        <% pedidos.forEach(function(p){ %>
-        <article class="item">
-          <div class="cab">
-            <h3><%= p.nome %></h3>
-            <span class="tag"><%= p.tipo || 'Evento' %></span>
-          </div>
-          <p class="quando">Recebido em <%= new Date(p.criado_em).toLocaleString('pt-PT', { timeZone: 'Europe/Lisbon', dateStyle: 'long', timeStyle: 'short' }) %></p>
-          <div class="dados">
-            <span><b>Contacto</b>
-              <% if (/@/.test(p.contacto)) { %><a href="mailto:<%= p.contacto %>"><%= p.contacto %></a>
-              <% } else if (/^[\d\s+()-]{6,}$/.test(p.contacto)) { %><a href="tel:<%= p.contacto.replace(/[^\d+]/g, '') %>"><%= p.contacto %></a>
-              <% } else { %><%= p.contacto %><% } %>
-            </span>
-            <% if (p.data_evento) { %><span><b>Data</b><%= p.data_evento %></span><% } %>
-            <% if (p.convidados) { %><span><b>Convidados</b><%= p.convidados %></span><% } %>
-            <% if (p.localidade) { %><span><b>Local</b><%= p.localidade %></span><% } %>
-          </div>
-          <% if (p.mensagem) { %><div class="msg"><%= p.mensagem %></div><% } %>
-        </article>
+      <p class="sub"><%= contagens.todos %> <%= contagens.todos === 1 ? 'pedido' : 'pedidos' %> no total. Os que precisam de resposta aparecem a laranja.</p>
+
+      <nav class="filtros">
+        <a href="/admin" class="<%= !filtro ? 'on' : '' %>">Todos<span><%= contagens.todos %></span></a>
+        <% Object.keys(ESTADOS).forEach(function(k){ %>
+          <a href="/admin?estado=<%= k %>" class="<%= filtro === k ? 'on' : '' %>"><%= ESTADOS[k] %><span><%= contagens[k] %></span></a>
         <% }) %>
-      </div>
+      </nav>
+
+      <% if (!pedidos.length) { %>
+        <p class="aviso">Não há pedidos <%= filtro ? 'neste estado' : 'ainda' %>. Quando alguém preencher o formulário do site, aparece aqui.</p>
+      <% } else { %>
+        <div class="lista">
+          <% pedidos.forEach(function(p){ %>
+          <a class="item <%= p.atencao ? 'atencao' : '' %>" href="/admin/pedido/<%= p.id %>">
+            <div class="cab">
+              <h3><%= p.nome %><% if (p.nao_lidas > 0) { %><span class="bola"><%= p.nao_lidas %></span><% } %></h3>
+              <div class="tags">
+                <span class="tipo"><%= p.tipo || 'Evento' %></span>
+                <span class="estado <%= p.estado %>"><%= ESTADOS[p.estado] || p.estado %></span>
+              </div>
+            </div>
+            <p class="quando">Recebido em <%= new Date(p.criado_em).toLocaleString('pt-PT', { timeZone: 'Europe/Lisbon', dateStyle: 'long', timeStyle: 'short' }) %></p>
+            <div class="dados">
+              <span><b>Contacto</b><%= p.contacto %></span>
+              <% if (p.data_evento) { %><span><b>Data</b><%= p.data_evento %></span><% } %>
+              <% if (p.convidados) { %><span><b>Convidados</b><%= p.convidados %></span><% } %>
+              <% if (p.localidade) { %><span><b>Local</b><%= p.localidade %></span><% } %>
+            </div>
+          </a>
+          <% }) %>
+        </div>
+      <% } %>
     <% } %>
   </main>
+
+  <script>
+    // Atualiza a lista de vez em quando para apanhar mensagens novas
+    setInterval(function () { if (!document.hidden) location.reload(); }, 45000);
+  </script>
 </body>
 </html>

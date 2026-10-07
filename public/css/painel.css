@@ -1,0 +1,128 @@
+/* Estilos do painel (equipa) e da página de conversa (cliente) */
+*, *::before, *::after { box-sizing: border-box; }
+:root { --ink: #17110d; --ink-2: #221812; --ink-3: #2d2018; --linha: #4a3626; --ember: #e8571f; --ember-2: #ff7a3d; --cream: #f6ecdc; --muted: #a89580; }
+body { margin: 0; font-family: 'Manrope', system-ui, sans-serif; background: var(--ink); color: var(--cream); line-height: 1.55; }
+a { color: inherit; }
+h1, h2, h3 { font-family: 'Fraunces', Georgia, serif; margin: 0; }
+code { background: rgba(255,255,255,.08); padding: 1px 6px; border-radius: 6px; }
+
+/* Topo */
+.topo { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 14px 4%; background: #0f0a07; border-bottom: 1px solid rgba(255,255,255,.07); position: sticky; top: 0; z-index: 5; flex-wrap: wrap; }
+.marca { display: flex; align-items: center; gap: 10px; font-family: 'Fraunces', Georgia, serif; font-weight: 700; font-size: 1.05rem; text-decoration: none; }
+.marca small { display: block; font-family: 'Manrope', sans-serif; font-weight: 600; font-size: .66rem; letter-spacing: .16em; text-transform: uppercase; color: var(--ember-2); }
+.nav-admin { display: flex; gap: 6px; }
+.nav-admin a { text-decoration: none; font-weight: 600; font-size: .92rem; padding: 8px 14px; border-radius: 999px; color: #d9c7ab; display: inline-flex; align-items: center; gap: 8px; }
+.nav-admin a:hover { color: var(--ember-2); }
+.nav-admin a.on { background: var(--ink-3); color: var(--cream); }
+.bola { background: var(--ember); color: #fff; font-size: .72rem; font-weight: 800; min-width: 20px; height: 20px; padding: 0 6px; border-radius: 999px; display: inline-grid; place-items: center; }
+.acoes { display: flex; align-items: center; gap: 10px; }
+.acoes a, .acoes button, .btn-linha {
+  appearance: none; background: transparent; border: 1.5px solid var(--linha); color: var(--cream); cursor: pointer;
+  font: 600 .85rem 'Manrope', sans-serif; padding: 8px 16px; border-radius: 999px; text-decoration: none; display: inline-block;
+}
+.acoes a:hover, .acoes button:hover, .btn-linha:hover { border-color: var(--ember-2); color: var(--ember-2); }
+
+/* Estrutura */
+main { width: min(960px, 92%); margin: 0 auto; padding: 32px 0 70px; }
+h1 { font-weight: 900; font-size: clamp(1.7rem, 4vw, 2.3rem); }
+.sub { color: #bba68a; margin: 4px 0 22px; }
+.aviso { background: #2a1a10; border: 1px solid var(--linha); padding: 16px 18px; border-radius: 12px; color: #d9c7ab; }
+.aviso.perigo { background: rgba(179, 38, 30, .16); border-color: rgba(255, 120, 110, .4); color: #ffb4ab; }
+.aviso.ok { background: rgba(31, 122, 61, .16); border-color: rgba(90, 200, 130, .4); color: #9be3b4; }
+
+/* Etiquetas de estado */
+.estado { font-size: .72rem; font-weight: 800; letter-spacing: .07em; text-transform: uppercase; padding: 4px 11px; border-radius: 999px; white-space: nowrap; }
+.estado.novo { background: rgba(232, 87, 31, .2); color: #ff9a68; }
+.estado.em_conversa { background: rgba(80, 140, 230, .2); color: #9cc2ff; }
+.estado.confirmado { background: rgba(60, 180, 100, .2); color: #8fe0ad; }
+.estado.recusado { background: rgba(160, 160, 160, .18); color: #bdb3a6; }
+
+/* Filtros */
+.filtros { display: flex; gap: 8px; flex-wrap: wrap; margin: 0 0 20px; }
+.filtros a { text-decoration: none; font-weight: 600; font-size: .85rem; padding: 7px 14px; border-radius: 999px; border: 1.5px solid var(--linha); color: #d9c7ab; }
+.filtros a.on { background: var(--ember); border-color: var(--ember); color: #fff; }
+.filtros a span { opacity: .75; margin-left: 4px; }
+
+/* Lista */
+.lista { display: grid; gap: 12px; }
+.item { display: block; text-decoration: none; background: var(--ink-2); border: 1px solid rgba(255,255,255,.06); border-left: 4px solid var(--linha); padding: 16px 20px; border-radius: 14px; transition: transform .15s, border-color .15s; }
+.item:hover { transform: translateY(-2px); border-color: var(--ember-2); }
+.item.atencao { border-left-color: var(--ember); }
+.cab { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+.cab h3 { font-size: 1.2rem; display: flex; align-items: center; gap: 10px; }
+.tags { display: flex; gap: 8px; align-items: center; }
+.tipo { color: #d9c7ab; font-size: .85rem; font-weight: 600; }
+.quando { color: var(--muted); font-size: .82rem; margin: 2px 0 8px; }
+.dados { display: flex; flex-wrap: wrap; gap: 6px 22px; font-size: .9rem; color: #e6d6bf; }
+.dados b { color: var(--ember-2); font-weight: 700; font-size: .7rem; letter-spacing: .1em; text-transform: uppercase; margin-right: 6px; }
+.dados a { text-decoration: underline; text-decoration-color: rgba(255,255,255,.3); }
+
+/* Detalhe do pedido */
+.voltar { display: inline-block; color: var(--muted); text-decoration: none; font-size: .88rem; margin-bottom: 14px; }
+.voltar:hover { color: var(--ember-2); }
+.painel { background: var(--ink-2); border: 1px solid rgba(255,255,255,.06); border-radius: 16px; padding: 20px 22px; margin-bottom: 18px; }
+.painel h2 { font-size: 1.1rem; margin-bottom: 12px; }
+.grade { display: grid; grid-template-columns: 1.2fr 1fr; gap: 18px; align-items: start; }
+.estados { display: flex; gap: 8px; flex-wrap: wrap; }
+.estados form { margin: 0; }
+.estados button { appearance: none; cursor: pointer; font: 700 .82rem 'Manrope', sans-serif; padding: 9px 16px; border-radius: 999px; border: 1.5px solid var(--linha); background: transparent; color: var(--cream); }
+.estados button:hover { border-color: var(--ember-2); }
+.estados button.on { background: var(--ember); border-color: var(--ember); color: #fff; cursor: default; }
+.copiar { display: flex; gap: 8px; margin-top: 10px; }
+.copiar input { flex: 1; font: inherit; font-size: .82rem; color: var(--cream); background: var(--ink); border: 1.5px solid var(--linha); border-radius: 10px; padding: 8px 12px; min-width: 0; }
+
+/* Chat */
+.chat { display: flex; flex-direction: column; background: var(--ink-2); border: 1px solid rgba(255,255,255,.06); border-radius: 16px; overflow: hidden; }
+.chat-cab { display: flex; justify-content: space-between; align-items: center; padding: 14px 18px; border-bottom: 1px solid rgba(255,255,255,.07); gap: 10px; }
+.chat-cab h2 { font-size: 1.05rem; }
+.msgs { height: min(460px, 56vh); overflow-y: auto; padding: 18px; display: flex; flex-direction: column; gap: 10px; background: var(--ink); }
+.vazio { margin: auto; text-align: center; color: var(--muted); font-size: .9rem; max-width: 28ch; }
+.msg { max-width: 82%; padding: 10px 14px; border-radius: 16px; word-wrap: break-word; overflow-wrap: anywhere; }
+.msg p { margin: 0; white-space: pre-wrap; font-size: .95rem; }
+.msg small { display: block; margin-top: 4px; font-size: .68rem; opacity: .7; }
+.msg.minha { align-self: flex-end; background: linear-gradient(135deg, var(--ember), var(--ember-2)); color: #fff; border-bottom-right-radius: 4px; }
+.msg.outra { align-self: flex-start; background: var(--ink-3); border-bottom-left-radius: 4px; }
+.msg .autor { font-size: .68rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--ember-2); margin-bottom: 2px; display: block; }
+.chat-form { display: flex; gap: 10px; padding: 12px; border-top: 1px solid rgba(255,255,255,.07); align-items: flex-end; }
+.chat-form textarea { flex: 1; font: inherit; color: var(--cream); background: var(--ink); border: 1.5px solid var(--linha); border-radius: 14px; padding: 11px 14px; resize: none; max-height: 140px; }
+.chat-form textarea:focus { outline: none; border-color: var(--ember); box-shadow: 0 0 0 3px rgba(232, 87, 31, .22); }
+.enviar { appearance: none; border: 0; cursor: pointer; font: 700 .95rem 'Manrope', sans-serif; color: #fff; background: linear-gradient(135deg, var(--ember), var(--ember-2)); border-radius: 999px; padding: 12px 22px; }
+.enviar[disabled] { opacity: .55; cursor: wait; }
+.chat-erro { color: #ffb4ab; font-size: .82rem; padding: 0 14px 10px; margin: 0; min-height: 0; }
+.nota { color: var(--muted); font-size: .82rem; margin: 12px 0 0; }
+
+/* Calendário */
+.cal-nav { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
+.cal-nav h1 { text-transform: capitalize; font-size: clamp(1.4rem, 3.5vw, 1.9rem); }
+.cal-nav .setas { display: flex; gap: 8px; }
+.cal { width: 100%; border-collapse: separate; border-spacing: 6px; table-layout: fixed; }
+.cal th { color: var(--ember-2); font-size: .72rem; letter-spacing: .12em; text-transform: uppercase; padding: 4px 0; text-align: left; }
+.cal td { vertical-align: top; background: var(--ink-2); border: 1px solid rgba(255,255,255,.05); border-radius: 10px; height: 104px; padding: 6px 7px; overflow: hidden; }
+.cal td.vazia { background: transparent; border-color: transparent; }
+.cal td.hoje { border-color: var(--ember); }
+.cal .dia { font-size: .78rem; font-weight: 800; color: #d9c7ab; }
+.cal .chip { display: block; margin-top: 4px; font-size: .72rem; font-weight: 700; padding: 3px 7px; border-radius: 7px; text-decoration: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cal .chip.confirmado { background: rgba(60, 180, 100, .25); color: #a8efc2; }
+.cal .chip.novo, .cal .chip.em_conversa { background: transparent; border: 1px dashed var(--ember-2); color: #ff9a68; }
+.legenda { display: flex; gap: 18px; flex-wrap: wrap; margin-top: 14px; color: var(--muted); font-size: .82rem; }
+.legenda span::before { content: ''; display: inline-block; width: 12px; height: 12px; border-radius: 4px; margin-right: 7px; vertical-align: -1px; }
+.legenda .c::before { background: rgba(60, 180, 100, .5); }
+.legenda .p::before { border: 1.5px dashed var(--ember-2); }
+
+/* Página do cliente */
+.cliente main { width: min(720px, 92%); }
+.resumo { display: flex; flex-wrap: wrap; gap: 6px 22px; margin-top: 10px; font-size: .92rem; color: #e6d6bf; }
+.resumo b { color: var(--ember-2); font-weight: 700; font-size: .7rem; letter-spacing: .1em; text-transform: uppercase; margin-right: 6px; }
+
+@media (max-width: 820px) {
+  .grade { grid-template-columns: 1fr; }
+  .cal { border-spacing: 3px; }
+  .cal td { height: 82px; padding: 4px; }
+  .cal .chip { font-size: .64rem; padding: 2px 4px; }
+  .msg { max-width: 92%; }
+}
+@media (max-width: 560px) {
+  .topo { padding: 12px 4%; }
+  .nav-admin { order: 3; width: 100%; }
+  .chat-form { flex-direction: column; align-items: stretch; }
+}

@@ -234,3 +234,14 @@ h1, h2, h3 { font-family: 'Fraunces', Georgia, serif; line-height: 1.1; margin: 
   .hero { padding-top: 110px; }
   .form { padding: 22px; }
 }
+
+/* ---------- Conversa / data ocupada ---------- */
+.dica { color: #b3261e; font-weight: 600; font-size: .8rem; line-height: 1.35; }
+.dica[hidden], .btn-conversa[hidden], .conv-float[hidden] { display: none; }
+.btn-conversa { margin-top: 4px; }
+.conv-float {
+  position: fixed; left: 18px; bottom: 18px; z-index: 60; text-decoration: none; color: #fff;
+  background: linear-gradient(135deg, var(--ember), var(--ember-2)); font-weight: 700; font-size: .9rem;
+  padding: 13px 20px; border-radius: 999px; box-shadow: 0 10px 26px rgba(232, 87, 31, .45); transition: transform .2s;
+}
+.conv-float:hover { transform: translateY(-2px); }

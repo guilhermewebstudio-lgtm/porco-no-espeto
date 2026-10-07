@@ -71,10 +71,40 @@
     if (e.key === 'Escape') { lb.hidden = true; }
   });
 
+  // Conversa guardada neste browser (botão flutuante)
+  var convFloat = document.getElementById('conv-float');
+  try {
+    var guardada = localStorage.getItem('pe_conversa');
+    if (guardada && /^\/conversa\/[a-f0-9]{32}$/.test(guardada)) {
+      convFloat.href = guardada;
+      convFloat.hidden = false;
+    }
+  } catch (e) {}
+
+  // Aviso de data já ocupada
+  var campoData = document.getElementById('data_evento');
+  var dica = document.getElementById('dica-data');
+  var hojeISO = new Date().toISOString().slice(0, 10);
+  campoData.min = hojeISO;
+  campoData.addEventListener('change', function () {
+    dica.hidden = true;
+    if (!campoData.value) return;
+    fetch('/api/data-ocupada?data=' + encodeURIComponent(campoData.value))
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (d) {
+        if (d && d.ocupada) {
+          dica.textContent = 'Já temos um evento nesta data. Envia o pedido na mesma e confirmamos a disponibilidade.';
+          dica.hidden = false;
+        }
+      })
+      .catch(function () {});
+  });
+
   // Formulário de orçamento
   var form = document.getElementById('form');
   var msg = document.getElementById('msg');
   var btn = document.getElementById('enviar');
+  var abrirConversa = document.getElementById('abrir-conversa');
   form.addEventListener('submit', function (e) {
     e.preventDefault();
     msg.className = 'form-msg';
@@ -98,8 +128,18 @@
       .then(function (res) {
         if (res.ok && res.j.ok) {
           msg.classList.add('ok');
-          msg.textContent = 'Pedido enviado! Respondemos em menos de 24 horas.';
           form.reset();
+          dica.hidden = true;
+          if (res.j.link) {
+            msg.textContent = 'Pedido enviado! Podes falar connosco e acompanhar tudo na tua conversa privada.';
+            abrirConversa.href = res.j.link;
+            abrirConversa.hidden = false;
+            try { localStorage.setItem('pe_conversa', res.j.link); } catch (e) {}
+            convFloat.href = res.j.link;
+            convFloat.hidden = false;
+          } else {
+            msg.textContent = 'Pedido enviado! Respondemos em menos de 24 horas.';
+          }
         } else {
           msg.classList.add('err');
           msg.textContent = res.j.erro || 'Ocorreu um erro. Tenta novamente.';
