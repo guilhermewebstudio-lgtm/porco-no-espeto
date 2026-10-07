@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title><%= site.nome %> | Catering e Eventos em Odivelas</title>
+  <meta name="description" content="Catering e eventos em Odivelas: porco no espeto à bronze para casamentos, batizados, festas e jantares de grupo. Pede o teu orçamento sem compromisso.">
+  <meta name="theme-color" content="#17110d">
+  <meta property="og:title" content="<%= site.nome %> - Catering e Eventos">
+  <meta property="og:description" content="Porco no espeto à bronze para casamentos, batizados, festas e jantares de grupo em Odivelas.">
+  <meta property="og:type" content="website">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700;9..144,900&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <div class="intro" id="intro" aria-hidden="true">
+    <div class="intro-inner">
+      <span class="intro-flame">🔥</span>
+      <span class="intro-title">Porco no Espeto</span>
+      <span class="intro-sub">à Bronze · Odivelas</span>
+    </div>
+  </div>
+
+  <header class="nav" id="nav">
+    <a href="#topo" class="brand">
+      <span class="brand-mark">🔥</span>
+      <span class="brand-text">Porco no Espeto<small>à Bronze · Odivelas</small></span>
+    </a>
+    <nav class="links" id="links">
+      <a href="#eventos">Eventos</a>
+      <a href="#formatos">Formatos</a>
+      <a href="#galeria">Galeria</a>
+      <a href="#contacto">Contactos</a>
+      <a href="#orcamento" class="btn btn-small">Pedir orçamento</a>
+    </nav>
+    <button class="burger" id="burger" aria-label="Abrir menu" aria-expanded="false"><span></span><span></span></button>
+  </header>
+
+  <main id="topo">
+
+    <section class="hero">
+      <div class="hero-bg"></div>
+      <div class="embers" aria-hidden="true"></div>
+      <div class="wrap hero-content">
+        <p class="eyebrow reveal">Catering e eventos em Odivelas</p>
+        <h1 class="reveal">O sabor do porco no espeto,<br><em>à bronze,</em> na tua festa.</h1>
+        <p class="lead reveal">Casamentos, batizados, aniversários e jantares de grupo. Assado devagar, servido com cuidado, para que tu só tenhas de aproveitar o dia.</p>
+        <div class="hero-cta reveal">
+          <a href="#orcamento" class="btn">Pedir orçamento grátis</a>
+          <% if (site.whatsapp) { %>
+          <a class="btn btn-ghost" href="https://wa.me/<%= site.whatsapp %>?text=<%= encodeURIComponent('Olá! Gostava de pedir um orçamento para um evento.') %>" target="_blank" rel="noopener">Falar no WhatsApp</a>
+          <% } else { %>
+          <a class="btn btn-ghost" href="#galeria">Ver galeria</a>
+          <% } %>
+        </div>
+        <ul class="hero-badges reveal">
+          <li>Sem compromisso</li>
+          <li>Resposta em 24h</li>
+          <li>Montagem e serviço incluídos</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="section" id="eventos">
+      <div class="wrap">
+        <p class="eyebrow reveal">Para quem fazemos</p>
+        <h2 class="reveal">Eventos que ficam na memória</h2>
+        <div class="grid grid-4">
+          <% site.eventos.forEach(function(e){ %>
+          <article class="card reveal">
+            <span class="card-icon"><%= e.icone %></span>
+            <h3><%= e.titulo %></h3>
+            <p><%= e.texto %></p>
+          </article>
+          <% }) %>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-dark" id="formatos">
+      <div class="wrap">
+        <p class="eyebrow reveal">Preços base</p>
+        <h2 class="reveal">Escolhe o formato ideal</h2>
+        <p class="sub reveal">Valores de referência por pessoa. O preço final depende da data, local e número de convidados.</p>
+        <div class="grid grid-3">
+          <% site.formatos.forEach(function(f){ %>
+          <article class="plan reveal <%= f.destaque ? 'plan-hot' : '' %>">
+            <% if (f.destaque) { %><span class="plan-tag">Mais pedido</span><% } %>
+            <h3><%= f.nome %></h3>
+            <p class="price"><%= f.preco %></p>
+            <ul>
+              <% f.itens.forEach(function(i){ %><li><%= i %></li><% }) %>
+            </ul>
+            <a href="#orcamento" class="btn <%= f.destaque ? '' : 'btn-ghost' %>">Pedir orçamento</a>
+          </article>
+          <% }) %>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap">
+        <p class="eyebrow reveal">Como funciona</p>
+        <h2 class="reveal">Simples, do pedido ao último prato</h2>
+        <div class="grid grid-3">
+          <% site.passos.forEach(function(p){ %>
+          <article class="step reveal">
+            <span class="step-n"><%= p.n %></span>
+            <h3><%= p.titulo %></h3>
+            <p><%= p.texto %></p>
+          </article>
+          <% }) %>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-cream" id="galeria">
+      <div class="wrap">
+        <p class="eyebrow reveal">Galeria</p>
+        <h2 class="reveal">Alguns dos nossos eventos</h2>
+        <div class="gallery">
+          <% if (galeria.length) { %>
+            <% galeria.forEach(function(src, i){ %>
+            <button class="shot reveal" data-src="<%= src %>" aria-label="Ampliar foto <%= i + 1 %>">
+              <img src="<%= src %>" alt="Evento com porco no espeto - foto <%= i + 1 %>" loading="lazy">
+            </button>
+            <% }) %>
+          <% } else { %>
+            <% for (var i = 0; i < 8; i++) { %>
+            <div class="shot shot-ph reveal"><span>Foto do evento</span></div>
+            <% } %>
+          <% } %>
+        </div>
+        <% if (!galeria.length) { %>
+        <p class="hint">Coloca as fotos reais em <code>public/galeria/</code> e aparecem aqui automaticamente.</p>
+        <% } %>
+      </div>
+    </section>
+
+    <section class="section" id="orcamento">
+      <div class="wrap form-wrap">
+        <div class="form-intro">
+          <p class="eyebrow reveal">Orçamento</p>
+          <h2 class="reveal">Conta-nos sobre o teu evento</h2>
+          <p class="reveal">Preenche em menos de um minuto. Respondemos com uma proposta à tua medida, sem compromisso.</p>
+          <ul class="form-points reveal">
+            <li>Resposta em menos de 24 horas</li>
+            <li>Proposta com ementa e preço</li>
+            <li>Podes alterar tudo depois</li>
+          </ul>
+        </div>
+
+        <form id="form" class="form reveal" novalidate>
+          <div class="field">
+            <label for="nome">Nome *</label>
+            <input id="nome" name="nome" type="text" autocomplete="name" required maxlength="100">
+          </div>
+          <div class="field">
+            <label for="contacto">Email ou telemóvel *</label>
+            <input id="contacto" name="contacto" type="text" autocomplete="email" required maxlength="120">
+          </div>
+          <div class="row">
+            <div class="field">
+              <label for="tipo">Tipo de evento</label>
+              <select id="tipo" name="tipo">
+                <% site.tiposEvento.forEach(function(t){ %><option><%= t %></option><% }) %>
+              </select>
+            </div>
+            <div class="field">
+              <label for="data_evento">Data prevista</label>
+              <input id="data_evento" name="data_evento" type="date">
+            </div>
+          </div>
+          <div class="row">
+            <div class="field">
+              <label for="convidados">N.º de convidados</label>
+              <input id="convidados" name="convidados" type="number" min="1" max="2000" inputmode="numeric">
+            </div>
+            <div class="field">
+              <label for="localidade">Localidade do evento</label>
+              <input id="localidade" name="localidade" type="text" maxlength="100">
+            </div>
+          </div>
+          <div class="field">
+            <label for="mensagem">Mensagem</label>
+            <textarea id="mensagem" name="mensagem" rows="4" maxlength="1500" placeholder="Algum detalhe importante? Horário, restrições alimentares, espaço..."></textarea>
+          </div>
+          <input type="text" name="website" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+          <button type="submit" class="btn btn-full" id="enviar">Enviar pedido de orçamento</button>
+          <p class="form-msg" id="msg" role="status" aria-live="polite"></p>
+        </form>
+      </div>
+    </section>
+
+    <section class="section section-dark" id="contacto">
+      <div class="wrap contact">
+        <div>
+          <p class="eyebrow reveal">Contactos</p>
+          <h2 class="reveal">Fala connosco</h2>
+          <ul class="contact-list reveal">
+            <li><span>Email</span><a href="mailto:<%= site.email %>"><%= site.email %></a></li>
+            <% if (site.telefone) { %><li><span>Telefone</span><a href="tel:<%= site.telefone.replace(/\s/g,'') %>"><%= site.telefone %></a></li><% } %>
+            <% if (site.whatsapp) { %><li><span>WhatsApp</span><a href="https://wa.me/<%= site.whatsapp %>" target="_blank" rel="noopener">Enviar mensagem</a></li><% } %>
+            <li><span>Zona</span><%= site.morada %> e arredores</li>
+            <li><span>Resposta</span><%= site.horario %></li>
+          </ul>
+        </div>
+        <div class="map reveal">
+          <iframe title="Mapa Odivelas" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+            src="https://www.google.com/maps?q=Odivelas,Portugal&output=embed"></iframe>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap">
+      <p>© <%= new Date().getFullYear() %> <%= site.nome %> · <%= site.local %></p>
+    </div>
+  </footer>
+
+  <% if (site.whatsapp) { %>
+  <a class="wa-float" href="https://wa.me/<%= site.whatsapp %>?text=<%= encodeURIComponent('Olá! Gostava de pedir um orçamento para um evento.') %>" target="_blank" rel="noopener" aria-label="Falar no WhatsApp">
+    <svg viewBox="0 0 32 32" width="28" height="28" fill="currentColor" aria-hidden="true"><path d="M16 3C9.4 3 4 8.3 4 14.9c0 2.3.7 4.5 1.9 6.3L4 29l8-2.1c1.7.9 3.9 1.4 4 1.4 6.6 0 12-5.3 12-11.9S22.6 3 16 3zm6.8 16.6c-.3.8-1.7 1.5-2.3 1.6-.6.1-1.3.1-2.1-.1-.5-.2-1.1-.4-1.9-.7-3.3-1.4-5.4-4.7-5.6-4.9-.2-.2-1.3-1.7-1.3-3.2s.8-2.3 1.1-2.6c.3-.3.6-.4.8-.4h.6c.2 0 .5-.1.7.5.3.6.9 2.1 1 2.3.1.2.1.4 0 .6-.1.2-.2.4-.4.6l-.5.6c-.2.2-.4.4-.2.8.2.4 1 1.6 2.1 2.6 1.4 1.3 2.6 1.7 3 1.9.4.2.6.2.8-.1.2-.3.9-1.1 1.2-1.4.3-.4.5-.3.9-.2.4.1 2.3 1.1 2.7 1.3.4.2.6.3.7.4.1.2.1.9-.2 1.7z"/></svg>
+  </a>
+  <% } %>
+
+  <div class="lightbox" id="lightbox" hidden><img alt=""><button aria-label="Fechar">×</button></div>
+
+  <script src="/js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>Admin | <%= site.nome %></title>
+  <style>
+    body { font-family: system-ui, sans-serif; background: #17110d; color: #f6ecdc; margin: 0; padding: 24px; }
+    h1 { margin: 0 0 6px; }
+    .aviso { background: #3a261a; padding: 12px 16px; border-radius: 10px; margin: 16px 0; }
+    .lista { display: grid; gap: 14px; margin-top: 18px; }
+    .item { background: #221812; border-left: 4px solid #e8571f; padding: 16px 18px; border-radius: 10px; }
+    .item h3 { margin: 0 0 6px; }
+    .meta { color: #bba68a; font-size: .85rem; }
+    .msg { margin-top: 8px; white-space: pre-wrap; }
+    a { color: #ff7a3d; }
+  </style>
+</head>
+<body>
+  <h1>Pedidos de orçamento</h1>
+  <a href="/">← Ver site</a>
+
+  <% if (!temDb) { %>
+    <p class="aviso">Base de dados não configurada (DATABASE_URL). Os pedidos só chegam por email.</p>
+  <% } else if (!pedidos.length) { %>
+    <p class="aviso">Ainda não há pedidos.</p>
+  <% } %>
+
+  <div class="lista">
+    <% pedidos.forEach(function(p){ %>
+    <div class="item">
+      <h3><%= p.nome %> · <%= p.tipo || 'Evento' %></h3>
+      <div class="meta">
+        <%= new Date(p.criado_em).toLocaleString('pt-PT', { timeZone: 'Europe/Lisbon' }) %>
+        · Contacto: <%= p.contacto %>
+        <% if (p.data_evento) { %> · Data: <%= p.data_evento %><% } %>
+        <% if (p.convidados) { %> · <%= p.convidados %> convidados<% } %>
+        <% if (p.localidade) { %> · <%= p.localidade %><% } %>
+      </div>
+      <% if (p.mensagem) { %><div class="msg"><%= p.mensagem %></div><% } %>
+    </div>
+    <% }) %>
+  </div>
+</body>
+</html>

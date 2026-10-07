@@ -1,0 +1,17 @@
+{
+  "name": "porco-no-espeto-odivelas",
+  "version": "1.0.0",
+  "description": "Site de catering e eventos - Porco no Espeto à Bronze Odivelas",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "ejs": "^3.1.10",
+    "express": "^4.19.2",
+    "pg": "^8.12.0"
+  }
+}
