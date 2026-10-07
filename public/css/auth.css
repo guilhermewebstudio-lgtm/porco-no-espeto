@@ -5,7 +5,7 @@ body {
   font-family: 'Barlow', system-ui, sans-serif; color: #eef1f9;
   background:
     radial-gradient(800px 480px at 85% 10%, rgba(242, 107, 29, .32), transparent 60%),
-    radial-gradient(700px 480px at 5% 95%, rgba(42, 167, 230, .28), transparent 60%),
+    radial-gradient(700px 480px at 5% 95%, rgba(140, 150, 215, .18), transparent 60%),
     linear-gradient(180deg, #000235, #0a0f5c);
 }
 .box {
