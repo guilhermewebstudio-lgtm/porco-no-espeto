@@ -35,7 +35,10 @@
       <a href="#formatos">Formatos</a>
       <a href="#galeria">Galeria</a>
       <a href="#contacto">Contactos</a>
-      <% if (cliente) { %>
+      <% if (admin) { %>
+      <a href="/admin" class="link-conta link-admin">Painel de admin</a>
+      <form method="post" action="/admin/logout" class="form-sair"><button type="submit">Sair</button></form>
+      <% } else if (cliente) { %>
       <a href="/conta" class="link-conta">Os meus pedidos</a>
       <form method="post" action="/conta/sair" class="form-sair"><button type="submit">Sair</button></form>
       <% } else { %>

@@ -185,7 +185,8 @@ function listarGaleria() {
 
 app.get('/', wrap(async (req, res) => {
   const cliente = await conta.clienteDaRequest(req);
-  res.render('index', { site, galeria: listarGaleria(), cliente });
+  const admin = !!process.env.ADMIN_PASSWORD && tokenValido(lerCookie(req, COOKIE));
+  res.render('index', { site, galeria: listarGaleria(), cliente, admin });
 }));
 
 app.get('/health', (req, res) => res.send('ok'));
@@ -422,10 +423,15 @@ function passwordCorreta(tentativa) {
   return crypto.timingSafeEqual(a, b);
 }
 
+// Path=/ para o site também saber que és tu (e mostrar o atalho para o painel).
+// Ao sair limpa-se também o caminho antigo /admin, de sessões criadas antes desta mudança.
 function definirCookie(req, res, valor, maxAgeSeg) {
-  const partes = [`${COOKIE}=${encodeURIComponent(valor)}`, 'Path=/admin', 'HttpOnly', 'SameSite=Lax', `Max-Age=${maxAgeSeg}`];
-  if (req.secure) partes.push('Secure');
-  res.setHeader('Set-Cookie', partes.join('; '));
+  const fazer = (caminho) => {
+    const partes = [`${COOKIE}=${encodeURIComponent(valor)}`, `Path=${caminho}`, 'HttpOnly', 'SameSite=Lax', `Max-Age=${maxAgeSeg}`];
+    if (req.secure) partes.push('Secure');
+    return partes.join('; ');
+  };
+  res.setHeader('Set-Cookie', maxAgeSeg === 0 ? [fazer('/'), fazer('/admin')] : [fazer('/')]);
 }
 
 // Pedidos que precisam de atenção: estado "novo" ou com mensagens do cliente por ler

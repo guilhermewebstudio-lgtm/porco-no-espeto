@@ -317,3 +317,5 @@ h1, h2 { text-transform: uppercase; }
 .conta-needed h3 { font-size: 2rem; text-transform: uppercase; }
 .conta-needed p { margin: 0; color: var(--muted); }
 .conta-needed .btn-ghost { --ghost-bg: #fff; color: var(--text) !important; }
+
+.link-admin { color: var(--flame) !important; }
