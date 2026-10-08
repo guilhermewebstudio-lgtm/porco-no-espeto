@@ -4,6 +4,7 @@
 module.exports = {
   nome: 'Porco no Espeto à Bronze',
   local: 'Odivelas',
+  desde: 2004, // ano que aparece na logo (confirmar com o cliente)
   email: process.env.NOTIFY_EMAIL || 'porcoespetoodivelas@gmail.com',
   whatsapp: (process.env.WHATSAPP_NUMBER || '351910092656').replace(/\D/g, ''), // formato: 351910092656
   telefone: process.env.PHONE_DISPLAY || '910 092 656',

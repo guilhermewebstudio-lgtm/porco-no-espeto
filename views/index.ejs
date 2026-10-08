@@ -21,7 +21,7 @@
   <div class="intro" id="intro" aria-hidden="true">
     <div class="intro-inner">
       <img class="intro-logo" src="/img/logo.jpg" alt="" width="190" height="190">
-      <span class="intro-sub">Desde 2004 · Odivelas</span>
+      <span class="intro-sub"><% if (site.desde) { %>Desde <%= site.desde %> · <% } %>Odivelas</span>
     </div>
   </div>
 
@@ -250,10 +250,29 @@
   </a>
   <% } %>
 
+  <button type="button" class="bot-btn<%= site.whatsapp ? '' : ' bot-sem-wa' %>" id="bot-btn" aria-expanded="false" aria-controls="bot-panel">
+    <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true"><path d="M4 3h16a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H9l-5 4v-4H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zm3 5v2h10V8H7zm0 4v2h7v-2H7z"/></svg>
+    <span>Tira dúvidas</span>
+  </button>
+  <section class="bot-panel<%= site.whatsapp ? '' : ' bot-sem-wa' %>" id="bot-panel" role="dialog" aria-label="Assistente virtual" hidden>
+    <header class="bot-cab">
+      <img src="/img/logo.jpg" alt="" width="40" height="40">
+      <div><strong>Assistente</strong><small>Responde sobre o site e o negócio</small></div>
+      <button type="button" id="bot-fechar" aria-label="Fechar assistente">×</button>
+    </header>
+    <div class="bot-msgs" id="bot-msgs" aria-live="polite"></div>
+    <div class="bot-chips" id="bot-chips"></div>
+    <form class="bot-form" id="bot-form" autocomplete="off">
+      <input id="bot-input" type="text" maxlength="300" placeholder="Escreve a tua pergunta..." aria-label="A tua pergunta">
+      <button type="submit" class="bot-enviar">Enviar</button>
+    </form>
+  </section>
+
   <a class="conv-float" id="conv-float" href="#" hidden>💬 A minha conversa</a>
 
   <div class="lightbox" id="lightbox" hidden><img alt=""><button aria-label="Fechar">×</button></div>
 
   <script src="/js/main.js?v=<%= v %>"></script>
+  <script src="/js/bot.js?v=<%= v %>"></script>
 </body>
 </html>

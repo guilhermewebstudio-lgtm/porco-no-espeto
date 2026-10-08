@@ -665,6 +665,20 @@ app.get('/admin/calendario', exigirAdmin, wrap(async (req, res) => {
   });
 }));
 
+// ---------- Assistente virtual ----------
+const bot = require('./bot');
+const topicosBot = bot.montarTopicos(site);
+const limiteBot = criarLimite(40, 10 * 60 * 1000, (req, res) =>
+  res.status(429).json({ ok: false, texto: 'Já enviaste muitas mensagens seguidas. Espera uns minutos ou fala diretamente com a equipa:', links: bot.contactos(site), sugestoes: [] })
+);
+app.post('/api/bot', limiteBot, (req, res) => {
+  const texto = limpar(req.body && req.body.texto, 300);
+  const r = bot.responder(texto, site, topicosBot);
+  // Perguntas sem resposta ficam nos registos (Render > Logs) para ensinares o assistente a responder-lhes
+  if (texto && !r.sabia) console.log('[assistente sem resposta]', JSON.stringify(texto.slice(0, 200)));
+  res.set('Cache-Control', 'no-store').json({ ok: true, texto: r.texto, links: r.links, sugestoes: r.sugestoes });
+});
+
 app.use((req, res) => res.status(404).render('404', { site }));
 
 app.listen(PORT, () => console.log(`Site a correr na porta ${PORT}`));
